@@ -46,7 +46,7 @@ export default function Header() {
                         }>
                         私信
                     </NavLink>
-                    <Search></Search>
+                    <Search className='search'></Search>
                 </div>
             </header>
             <Outlet />

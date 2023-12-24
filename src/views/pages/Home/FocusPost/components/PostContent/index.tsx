@@ -5,7 +5,7 @@ export default function PostContent() {
     const [showComment, setShowComment] = useState(false)
     const handleComment = () => {
         setShowComment(!showComment)
-        console.log(showComment)
+        //console.log(showComment)
     }
     return (
         <div className="post-container">
