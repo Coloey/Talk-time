@@ -1,5 +1,5 @@
 {
-  "name": "talktime",
+  "name": "antd-demo",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,15 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@ant-design/icons": "^5.2.6",
-    "antd": "^5.12.5",
-    "moment": "^2.29.4",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router": "^6.21.0",
-    "react-router-dom": "^6.21.0",
-    "styled-components": "^6.1.1",
-    "stylus": "^0.62.0"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",

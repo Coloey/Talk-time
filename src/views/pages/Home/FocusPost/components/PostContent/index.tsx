@@ -1,6 +1,6 @@
 import './index.styl'
 import { useState, useEffect } from 'react'
-import Comment from '../Comment/index'
+import MyComment from '../Comment/index'
 export default function PostContent() {
     const [showComment, setShowComment] = useState(false)
     const handleComment = () => {
@@ -53,7 +53,7 @@ export default function PostContent() {
                     </svg>
                 </button>
             </div>
-            <Comment show={showComment}></Comment>
+            <MyComment show={showComment}></MyComment>
         </div>
 
     )

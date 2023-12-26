@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom/client'
-import App from './App.tsx'
+import './polyfill'
 import Header from './views/components/Header/index';
 import Home from './views/pages/Home/index';
 import Post from './views/pages/Post/index';
