@@ -1,8 +1,12 @@
-import * as React from 'react'
+import React, { useEffect } from 'react'
 import { RouteIndex } from '../../../types/app'
-import { Link, NavLink, Outlet } from 'react-router-dom'
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import './index.styl'
 export default function Home() {
+    const navigate = useNavigate()
+    useEffect(() => {
+        navigate(RouteIndex.FOCUS_POST)
+    }, [])
     return (
         <div className="page">
             <div className="container">
@@ -27,9 +31,9 @@ export default function Home() {
                     </div>
                     <Outlet />
                 </div>
-                <div className="right">
+                {/* <div className="right">
 
-                </div>
+                </div> */}
             </div>
         </div>
     )

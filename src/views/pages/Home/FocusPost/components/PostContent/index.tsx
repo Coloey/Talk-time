@@ -3,9 +3,15 @@ import { useState, useEffect } from 'react'
 import MyComment from '../Comment/index'
 export default function PostContent() {
     const [showComment, setShowComment] = useState(false)
+    const [commentCount, setCommentCount] = useState(0)
+    const [likes, setLikes] = useState(0)
     const handleComment = () => {
         setShowComment(!showComment)
         //console.log(showComment)
+    }
+    const handleCommentCount = (val) => {
+        //console.log(val)
+        setCommentCount(val)
     }
     return (
         <div className="post-container">
@@ -24,11 +30,11 @@ export default function PostContent() {
             </div>
             <div className="footer">
                 <span>
-                    <button className='btn'>
+                    <button className='btn' onClick={() => setLikes(likes + 1)}>
                         <svg className="icon" aria-hidden="true">
                             <use xlinkHref="#icon-a-44tubiao-208"></use>
                         </svg>
-                        赞同100
+                        赞同{likes}
                     </button>
                 </span>
                 <button className='btn' onClick={handleComment}>
@@ -36,7 +42,7 @@ export default function PostContent() {
                         <use xlinkHref="#icon-a-44tubiao-168"></use>
                     </svg>
                     {!showComment
-                        ? (<span>18条评论</span>)
+                        ? (<span>{commentCount}条评论</span>)
                         : (<span>收起评论</span>)
                     }
                 </button>
@@ -53,7 +59,7 @@ export default function PostContent() {
                     </svg>
                 </button>
             </div>
-            <MyComment show={showComment}></MyComment>
+            <MyComment show={showComment} onCommentsCount={handleCommentCount}></MyComment>
         </div>
 
     )

@@ -1,0 +1,44 @@
+.chat__footer 
+    padding: 10px;
+    background-color: #f9f7ff;
+    height: 10vh;
+    .form 
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .message 
+            width: 80%;
+            height: 100%;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            outline: none;
+            padding: 15px;
+
+        .sendBtn 
+            width: 150px;
+            background-color: #8F6FFE;
+            padding: 10px;
+            border: none;
+            outline: none;
+            color: #eae3d2;
+            cursor: pointer;
+            &:hover
+                background-color: #a58cf7
+        .emoji-container 
+            width: 400px;
+            height: 210px;
+            position: fixed;
+            bottom: 75px;
+            right: 40px;
+            z-index: 10;
+            transition: all 0.2s;
+        .icon
+            margin-left: 2px;
+            width: 40px;
+            height: 40px;
+            :hover
+                cursor: pointer
+        .hidden
+            display: none

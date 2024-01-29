@@ -1,10 +1,29 @@
 import React, { useEffect, useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { RouteIndex } from '../../../types/app'
 import { Outlet } from 'react-router-dom'
+import Login from '../../pages/login/index'
 import './index.styl'
 import Search from '../Search/index'
-export default function Header() {
+import { message } from 'antd'
+//import { logout } from '../../../utils/api'
+export default function Header({ isAuthenticated }) {
+    const navigate = useNavigate()
+    const [messageApi, contextHolder] = message.useMessage()
+    const logout = () => {
+        localStorage.getItem('userInfo') && localStorage.removeItem('userInfo')
+        localStorage.getItem('userName') && localStorage.removeItem('userName')
+        localStorage.getItem('token') && localStorage.removeItem('token')
+        messageApi.open({
+            type: 'success',
+            content: '退出登录成功'
+        })
+        navigate(RouteIndex.SIGNIN)
+    }
+    useEffect(() => {
+        const isAuthenticated = window.localStorage.getItem('token') || false
+        isAuthenticated || navigate(RouteIndex.SIGNIN)
+    }, [])
     return (
         <>
             <header>
@@ -26,7 +45,7 @@ export default function Header() {
                                     ? 'tab tab-active'
                                     : 'tab'
                         }>
-                        发表动态
+                        发布
                     </NavLink>
                     <NavLink to={RouteIndex.MESSAGE}
                         className={
@@ -47,6 +66,7 @@ export default function Header() {
                         私信
                     </NavLink>
                     <Search className='search'></Search>
+                    <button className='btn' onClick={logout}>退出</button>
                 </div>
             </header>
             <Outlet />
