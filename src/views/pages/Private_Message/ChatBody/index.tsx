@@ -10,14 +10,16 @@ const ChatBody = ({ messages, lastMessageRef, typingStatus, toUser }) => {
         //window.location.reload();
     };
     useEffect(() => {
-        const newMessage = messages.map((item)=>{
-            //console.log(item)
-            //console.log(item.text)
-            if(item && item?.text){
-                item.text.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/gi, (match, grp) => {
-                    console.log(match,'match')
-                    return String.fromCodePoint(parseInt(grp, 16));
-                  });
+        const newMessage = messages.map((item) => {
+            console.log(item)
+            const emojiDecodeRegex = /emoji\(\d+\)/g
+            console.log(item.text)
+            if (item && item?.text) {
+                let fmt_str = item.text;
+                item.text = fmt_str.replace(emojiDecodeRegex, p => {
+                    const filterP = p.replace(/[^\d]/g, '')
+                    return String.fromCodePoint(filterP)
+                })
             }
             return item
         })

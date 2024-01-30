@@ -7,11 +7,11 @@ const ChatFooter = ({ socket, toUser }) => {
     const [message, setMessage] = useState('');
     const [visible, setVisible] = useState(false)
     const fromUser = localStorage.getItem('userName')
-    const handleTyping = () =>{
+    const handleTyping = () => {
         socket.emit('typing', `${fromUser} 正在输入`);
     }
     const chooseEmoji = (item) => {
-        setMessage(message+item+'')
+        setMessage(message + item + '')
     }
     const handleSendMessage = async (e) => {
         e.preventDefault();
@@ -37,7 +37,7 @@ const ChatFooter = ({ socket, toUser }) => {
             console.log(res, 'client store')
         }
     };
-    
+
     return (
         <div className="chat__footer">
             <form className="form" onSubmit={handleSendMessage}>
@@ -54,7 +54,7 @@ const ChatFooter = ({ socket, toUser }) => {
                 <svg className="icon" aria-hidden="true" onClick={() => setVisible(!visible)}>
                     <use xlinkHref="#icon-xiaolian"></use>
                 </svg>
-                <div className="emoji-container"  className={`emoji-container ${visible ? '' : 'hidden'}`}>
+                <div className={`emoji-container ${visible ? '' : 'hidden'}`}>
                     <Emoji chooseEmoji={chooseEmoji}></Emoji>
                 </div>
             </form>

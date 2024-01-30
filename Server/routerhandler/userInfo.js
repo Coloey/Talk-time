@@ -1,5 +1,7 @@
 const db = require("../db/index");
 const bcrypt = require("bcryptjs");
+const emojiRegex = require('emoji-regex');
+const regex = emojiRegex()
 exports.userInfo = (req, res) => {
   const sql = "select name,avatar from users where name=?";
   db.query(sql, [req.user.name], (err, result) => {
@@ -50,13 +52,7 @@ exports.updatePassword = (req, res) => {
 };
 exports.storeMessages = (req, res) => {
   let { fromUser, toUser, text, timestamp } = req.body;
-  //timestamp = new Date(timestamp).toISOString()
-  text = Array.from(text)
-    .map((char) => {
-      const unicode = char.codePointAt(0).toString(16);
-      return unicode;
-    })
-    .join("");
+  text = text.replace(regex, (p) => `emoji(${p.codePointAt(0)})`)
   const sql =
     "insert into chat_messages(fromUser, toUser, text, timestamp) values (?,?,?,?)";
   db.query(sql, [fromUser, toUser, text, timestamp], (err, result) => {
