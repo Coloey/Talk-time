@@ -10,6 +10,7 @@ const ChatPage = ({ socket }) => {
     const lastMessageRef = useRef(null);
     const [toUser, setToUser] = useState('')
     const [users, setUsers] = useState([]);
+    const [messagesCount, setMessagesCount] = useState(0)
     useEffect(() => {
         const getUsers = async () => {
             const res = await getAllUsers();
@@ -21,9 +22,10 @@ const ChatPage = ({ socket }) => {
             const res = await getMessages()
             console.log(res.data.data, 'getMessage')
             setMessages(res.data.data)
+            setMessagesCount(messages.filter(item=>item.readStaus===false).length)
         }
         getMessage()
-    }, [])
+    }, [messages])
     useEffect(() => {
         socket.on(localStorage.getItem('userName'), (data) => setMessages([...messages, data]));
     }, [socket, messages]);
@@ -48,9 +50,18 @@ const ChatPage = ({ socket }) => {
     const receiveName = (val) => {
         setToUser(val)
     }
+    const handleReadedMessages = (myMessages) => {
+        setMessages(myMessages)
+    }
     return (
         <div className="chat">
-            <ChatBar socket={socket} sendName={receiveName} users={users} />
+            <ChatBar
+                socket={socket}
+                sendName={receiveName}
+                users={users}
+                messages={messages}
+                handleReadedMessages={handleReadedMessages}
+            />
             <div className="chat_main">
                 <ChatBody
                     messages={messages}

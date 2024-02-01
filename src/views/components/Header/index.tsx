@@ -22,7 +22,7 @@ export default function Header({ isAuthenticated }) {
     }
     useEffect(() => {
         const isAuthenticated = window.localStorage.getItem('token') || false
-        isAuthenticated || navigate(RouteIndex.SIGNIN)
+        // isAuthenticated || navigate(RouteIndex.SIGNIN)
     }, [])
     return (
         <>
@@ -65,6 +65,7 @@ export default function Header({ isAuthenticated }) {
                         }>
                         私信
                     </NavLink>
+                    <div className="messageCount">99+</div>
                     <Search className='search'></Search>
                     <button className='btn' onClick={logout}>退出</button>
                 </div>

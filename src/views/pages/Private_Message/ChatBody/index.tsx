@@ -10,7 +10,7 @@ const ChatBody = ({ messages, lastMessageRef, typingStatus, toUser }) => {
         //window.location.reload();
     };
     useEffect(() => {
-        const newMessage = messages.map((item) => {
+        const newMessage = (messages || []).map((item) => {
             console.log(item)
             const emojiDecodeRegex = /emoji\(\d+\)/g
             console.log(item.text)
