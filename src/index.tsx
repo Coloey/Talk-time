@@ -12,6 +12,7 @@ import Login from './views/pages/login/index';
 import { createBrowserRouter, RouterProvider, useNavigate } from "react-router-dom";
 import { RouteIndex } from './types/app';
 import ErrorPage from './views/pages/error-page';
+import store from './app/store'
 import './index.css'
 import socketIO from 'socket.io-client';
 const socket = socketIO.connect('http://127.0.0.1:4000')
@@ -62,6 +63,6 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <RouterProvider router={router}></RouterProvider>
+    <RouterProvider router={router} store={store}></RouterProvider>
   </React.StrictMode>,
 )
