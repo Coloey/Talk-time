@@ -34,7 +34,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: RouteIndex.FOCUS_POST,
-            element: <FocusPost />
+            element: <FocusPost socket={socket} />
           },
           {
             path: RouteIndex.COMMUNITY,
@@ -44,7 +44,7 @@ const router = createBrowserRouter([
       },
       {
         path: RouteIndex.COMMUNITY_NEW_POST,
-        element: <Post />
+        element: <Post socket={socket}/>
       },
       {
         path: RouteIndex.MESSAGE,

@@ -85,6 +85,7 @@ socketIO.on("connection", function (socket) {
     }
   });
   socket.on("sendPost", (obj) => {
+    console.log(obj,'obj')
     // console.log(obj);
     // for (let username in onlineUsers) {
     //   // console.log(username);

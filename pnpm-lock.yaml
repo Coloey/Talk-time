@@ -20,6 +20,9 @@ dependencies:
   draft-js:
     specifier: ^0.11.7
     version: 0.11.7(react-dom@18.2.0)(react@18.2.0)
+  draft-js-export-html:
+    specifier: ^1.4.1
+    version: 1.4.1(draft-js@0.11.7)(immutable@3.7.6)
   draft-js-utils:
     specifier: ^1.4.1
     version: 1.4.1(draft-js@0.11.7)(immutable@3.7.6)
@@ -1550,6 +1553,17 @@ packages:
     dependencies:
       esutils: 2.0.3
     dev: true
+
+  /draft-js-export-html@1.4.1(draft-js@0.11.7)(immutable@3.7.6):
+    resolution: {integrity: sha512-G4VGBSalPowktIE4wp3rFbhjs+Ln9IZ2FhXeHjsZDSw0a2+h+BjKu5Enq+mcsyVb51RW740GBK8Xbf7Iic51tw==}
+    peerDependencies:
+      draft-js: '>=0.10.0'
+      immutable: 3.x.x
+    dependencies:
+      draft-js: 0.11.7(react-dom@18.2.0)(react@18.2.0)
+      draft-js-utils: 1.4.1(draft-js@0.11.7)(immutable@3.7.6)
+      immutable: 3.7.6
+    dev: false
 
   /draft-js-utils@1.4.1(draft-js@0.11.7)(immutable@3.7.6):
     resolution: {integrity: sha512-xE81Y+z/muC5D5z9qWmKfxEW1XyXfsBzSbSBk2JRsoD0yzMGGHQm/0MtuqHl/EUDkaBJJLjJ2EACycoDMY/OOg==}

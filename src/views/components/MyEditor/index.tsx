@@ -1,12 +1,13 @@
 import React, { useState, useRef } from 'react';
 import ReactDOM from 'react-dom';
-import { Editor, EditorState, RichUtils } from 'draft-js';
+import { Editor, EditorState, RichUtils, convertToRaw, convertFromRaw } from 'draft-js';
 import 'draft-js/dist/Draft.css';
+import { stateToHTML} from 'draft-js-export-html';
 import InlineTypesControl from './InlineTypesControl/index';
 import BlockTypesControl from './BlockTypeControl/index';
 import FontSizeControl from './FontSizeControl/index';
 import ImageControl from './ImageControl/index';
-export default function MyEditor({ imageUploadConfig }) {
+export default function MyEditor({ imageUploadConfig, socket }) {
     const [editorState, setEditorState] = useState(
         () => EditorState.createEmpty(),
     );
@@ -36,22 +37,13 @@ export default function MyEditor({ imageUploadConfig }) {
     // const handleBlockType = (blockType) => {
     //     handleEditorChange(RichUtils.toggleBlockType(editorState, blockType))
     // }
-    let flatObj = {};
     const handleSave = () => {
         console.log('click')
         const contentState = editorState.getCurrentContent()
-        const rawContent = {}
-        const convertToRaw = (obj) => {
-            for (let key in obj) {
-                if (typeof obj[key] !== 'object') {
-                    rawContent[key] = obj[key]
-                } else {
-                    convertToRaw(obj[key])
-                }
-            }
-        }
-        convertToRaw(contentState)
-        console.log(rawContent,'rawContent')
+        //const rawContent = convertToRaw(contentState)
+        //console.log(rawContent?.blocks[0]?.text,'rawContent')
+        console.log(stateToHTML(contentState), 'contentState')
+        socket.emit('sendPost')
     }
     const handleLoad = () => {
         const rawContent = '{"blocks":[{"key":"1gs7c","text":"Hello, Draft.js!","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}';
