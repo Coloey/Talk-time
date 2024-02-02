@@ -6,7 +6,6 @@ import InlineTypesControl from './InlineTypesControl/index';
 import BlockTypesControl from './BlockTypeControl/index';
 import FontSizeControl from './FontSizeControl/index';
 import ImageControl from './ImageControl/index';
-import { Flex } from '../../../../node_modules/antd/es/index';
 export default function MyEditor({ imageUploadConfig }) {
     const [editorState, setEditorState] = useState(
         () => EditorState.createEmpty(),
@@ -20,6 +19,7 @@ export default function MyEditor({ imageUploadConfig }) {
     }
     const handleEditorChange = (newEditorState) => {
         setEditorState(newEditorState)
+        //console.log(newEditorState, 'newEditorState');
         //onEditorFocus()
     }
     const handleKeyCommand = (command, editorState) => {
@@ -36,10 +36,22 @@ export default function MyEditor({ imageUploadConfig }) {
     // const handleBlockType = (blockType) => {
     //     handleEditorChange(RichUtils.toggleBlockType(editorState, blockType))
     // }
+    let flatObj = {};
     const handleSave = () => {
+        console.log('click')
         const contentState = editorState.getCurrentContent()
-        const rawContent = JSON.stringify(convertToRaw(contentState));
-        console.log(rawContent)
+        const rawContent = {}
+        const convertToRaw = (obj) => {
+            for (let key in obj) {
+                if (typeof obj[key] !== 'object') {
+                    rawContent[key] = obj[key]
+                } else {
+                    convertToRaw(obj[key])
+                }
+            }
+        }
+        convertToRaw(contentState)
+        console.log(rawContent,'rawContent')
     }
     const handleLoad = () => {
         const rawContent = '{"blocks":[{"key":"1gs7c","text":"Hello, Draft.js!","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}';
@@ -107,6 +119,7 @@ export default function MyEditor({ imageUploadConfig }) {
                 alignItems: 'center',
                 justifyContent: 'center',
                 cursor: 'pointer',
+                zIndex: 2,
 
             }}>
                 <button style={{ backgroundColor: '#8F6FFE', color: '#fff', marginRight: '20px', zIndex: 1, outline: 'none' }} onClick={handleSave}>Save</button>
