@@ -6,6 +6,7 @@ import Login from '../../pages/login/index'
 import './index.styl'
 import Search from '../Search/index'
 import { message } from 'antd'
+import { useSelector } from 'react-redux'
 //import { logout } from '../../../utils/api'
 export default function Header({ isAuthenticated }) {
     const navigate = useNavigate()
@@ -24,6 +25,7 @@ export default function Header({ isAuthenticated }) {
         const isAuthenticated = window.localStorage.getItem('token') || false
         // isAuthenticated || navigate(RouteIndex.SIGNIN)
     }, [])
+    const messageCount = useSelector((state) => state.messageCount);
     return (
         <>
             <header>
@@ -65,7 +67,7 @@ export default function Header({ isAuthenticated }) {
                         }>
                         私信
                     </NavLink>
-                    <div className="messageCount">99+</div>
+                    <div className="messageCount">{messageCount}</div>
                     <Search className='search'></Search>
                     <button className='btn' onClick={logout}>退出</button>
                 </div>

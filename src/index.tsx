@@ -12,9 +12,10 @@ import Login from './views/pages/login/index';
 import { createBrowserRouter, RouterProvider, useNavigate } from "react-router-dom";
 import { RouteIndex } from './types/app';
 import ErrorPage from './views/pages/error-page';
-import store from './app/store'
+import { store } from './app/store';
 import './index.css'
 import socketIO from 'socket.io-client';
+import { Provider } from 'react-redux';
 const socket = socketIO.connect('http://127.0.0.1:4000')
 // import { io } from "socket.io-client";
 // const socket = io("http://127.0.0.1:4000");
@@ -63,6 +64,8 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <RouterProvider router={router} store={store}></RouterProvider>
+    <Provider store={store}>
+        <RouterProvider router={router}></RouterProvider>
+    </Provider>
   </React.StrictMode>,
 )

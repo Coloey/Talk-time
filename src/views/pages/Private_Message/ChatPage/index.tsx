@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import ChatBar from '../ChatBar/index';
 import ChatBody from '../ChatBody/index';
 import ChatFooter from '../ChatFooter/index';
+import { useSelector, useDispatch } from 'react-redux';
 import './index.styl'
 import { getAllUsers, getMessages } from '../../../../utils/api';
 const ChatPage = ({ socket }) => {
@@ -10,7 +11,11 @@ const ChatPage = ({ socket }) => {
     const lastMessageRef = useRef(null);
     const [toUser, setToUser] = useState('')
     const [users, setUsers] = useState([]);
-    const [messagesCount, setMessagesCount] = useState(0)
+    //const [messagesCount, setMessagesCount] = useState(0)
+    //console.log(state,'state')
+    const messageCount = useSelector((state) => state.messageCounter);
+    console.log(messageCount)
+    const dispatch = useDispatch();
     useEffect(() => {
         const getUsers = async () => {
             const res = await getAllUsers();
@@ -22,7 +27,9 @@ const ChatPage = ({ socket }) => {
             const res = await getMessages()
             console.log(res.data.data, 'getMessage')
             setMessages(res.data.data)
-            setMessagesCount(messages.filter(item=>item.readStaus===false).length)
+            const filterMessageCount = messages.filter(item => item.readStaus === false).length
+            dispatch(initValue(filterMessageCount))
+            console.log(messageCount)
         }
         getMessage()
     }, [messages])
