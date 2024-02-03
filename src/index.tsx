@@ -38,13 +38,13 @@ const router = createBrowserRouter([
           },
           {
             path: RouteIndex.COMMUNITY,
-            element: <Community />
+            element: <Community socket={socket} />
           }
         ]
       },
       {
         path: RouteIndex.COMMUNITY_NEW_POST,
-        element: <Post socket={socket}/>
+        element: <Post socket={socket} />
       },
       {
         path: RouteIndex.MESSAGE,
@@ -65,7 +65,7 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Provider store={store}>
-        <RouterProvider router={router}></RouterProvider>
+      <RouterProvider router={router}></RouterProvider>
     </Provider>
   </React.StrictMode>,
 )

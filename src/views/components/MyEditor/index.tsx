@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { Editor, EditorState, RichUtils, convertToRaw, convertFromRaw } from 'draft-js';
 import 'draft-js/dist/Draft.css';
-import { stateToHTML} from 'draft-js-export-html';
+import { stateToHTML } from 'draft-js-export-html';
 import InlineTypesControl from './InlineTypesControl/index';
 import BlockTypesControl from './BlockTypeControl/index';
 import FontSizeControl from './FontSizeControl/index';
@@ -43,7 +43,7 @@ export default function MyEditor({ imageUploadConfig, socket }) {
         //const rawContent = convertToRaw(contentState)
         //console.log(rawContent?.blocks[0]?.text,'rawContent')
         console.log(stateToHTML(contentState), 'contentState')
-        socket.emit('sendPost')
+        socket.emit('sendPost', { data: stateToHTML(contentState) });
     }
     const handleLoad = () => {
         const rawContent = '{"blocks":[{"key":"1gs7c","text":"Hello, Draft.js!","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}';

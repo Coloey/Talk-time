@@ -67,7 +67,7 @@ export default function Header({ isAuthenticated }) {
                         }>
                         私信
                     </NavLink>
-                    <div className="messageCount">{messageCount}</div>
+                    <div className={messageCount === 0 ? '' : 'messageCount'}>{messageCount >= 100 ? '99+' : (messageCount !== 0 ? messageCount : '')}</div>
                     <Search className='search'></Search>
                     <button className='btn' onClick={logout}>退出</button>
                 </div>

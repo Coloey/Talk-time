@@ -1,8 +1,9 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import ChatBar from '../ChatBar/index';
 import ChatBody from '../ChatBody/index';
 import ChatFooter from '../ChatFooter/index';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux'
+import { store } from '../../../../app/store';
 import './index.styl'
 import { getAllUsers, getMessages } from '../../../../utils/api';
 const ChatPage = ({ socket }) => {
@@ -12,10 +13,8 @@ const ChatPage = ({ socket }) => {
     const [toUser, setToUser] = useState('')
     const [users, setUsers] = useState([]);
     //const [messagesCount, setMessagesCount] = useState(0)
-    //console.log(state,'state')
-    const messageCount = useSelector((state) => state.messageCounter);
-    console.log(messageCount)
-    const dispatch = useDispatch();
+    const messageCount = useSelector((state) => state.messageCount);
+    const dispatch = useDispatch()
     useEffect(() => {
         const getUsers = async () => {
             const res = await getAllUsers();
@@ -27,11 +26,13 @@ const ChatPage = ({ socket }) => {
             const res = await getMessages()
             console.log(res.data.data, 'getMessage')
             setMessages(res.data.data)
-            const filterMessageCount = messages.filter(item => item.readStaus === false).length
-            dispatch(initValue(filterMessageCount))
-            console.log(messageCount)
+            //dispatch({ type: 'initValue', [messages.filter(item => item.readStaus === false).length]})
         }
         getMessage()
+    }, [])
+    useEffect(() => {
+        //console.log(messages, 'messages', (messages.filter(item => item.readStatus === 0).length))
+        dispatch({ type: 'initValue', payload: messages.filter(item => item.readStatus === 0).length })
     }, [messages])
     useEffect(() => {
         socket.on(localStorage.getItem('userName'), (data) => setMessages([...messages, data]));

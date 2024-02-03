@@ -89,7 +89,7 @@ socketIO.on("connection", function (socket) {
     // console.log(obj);
     // for (let username in onlineUsers) {
     //   // console.log(username);
-      socketIO.emit("post",obj);
+    socketIO.emit('post',obj);
     // }
   });
   socket.on("disconnect", () => {
