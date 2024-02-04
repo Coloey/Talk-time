@@ -92,6 +92,10 @@ socketIO.on("connection", function (socket) {
     socketIO.emit('post',obj);
     // }
   });
+  socket.on('sendComments', (obj) => {
+    console.log(obj, 'comments')
+    socketIO.emit('updateComments',obj)
+  })
   socket.on("disconnect", () => {
     console.log(`${socket.id}断开连接`);
     for(let [key,val] in Object.entries(onlineUsers)){

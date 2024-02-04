@@ -4,7 +4,7 @@ import Icon from '@ant-design/icons';
 import { useState, useEffect } from 'react'
 import moment from 'moment'
 import SingleComment from './SingleComment';
-export default function MyComment({ show, onCommentsCount }) {
+export default function MyComment({ show, onCommentsCount, socket}) {
     const [comments, setComments] = useState([])
     const [newComment, setNewComment] = useState('')
     // const [commentCount, setCommentCount] = useState(0)
@@ -36,8 +36,14 @@ export default function MyComment({ show, onCommentsCount }) {
         // }
         updatedComments[0].replies.push({ text: replyText, likes: 0, replies: [] })
         setComments(updatedComments)
-        console.log(comments)
+        socket.emit('sendComments', { updatedComments })
+        //console.log(comments)
     }
+    useEffect(() => {
+        socket.on('updateComments', (data) => {
+            console.log(data,'updateComments')
+        })
+    },[])
     // const handleAnswer = (val) => {
     //     setAnswer(val)
     // }
@@ -62,87 +68,27 @@ export default function MyComment({ show, onCommentsCount }) {
             <div className='commentContainers'>
                 {
                     comments.map((comment, index) => (
-                        // <div className="commentContainer" key={index}>
-                        //     <div className="avatar">头像</div>
-                        //     <div key={index} className='commentContent'>
-                        //         <span>李相夷</span>
-                        //         <p>
-                        //             {comment.text}
-                        //             <span>
-                        //                 <button onClick={() => handleLikeComment(index)} className='btn'>
-                        //                     <svg className="icon" aria-hidden="true">
-                        //                         <use xlinkHref="#icon-a-44tubiao-208"></use>
-                        //                     </svg>
-                        //                     {comment.likes}
-                        //                 </button>
-                        //             </span>
-                        //             <button onClick={() => setAnswer(!answer)} className='btn'>
-                        //                 <svg className="icon" aria-hidden="true">
-                        //                     <use xlinkHref="#icon-a-44tubiao-168"></use>
-                        //                 </svg>
-                        //                 回复
-                        //             </button>
-                        //         </p>
-                        //         <input
-                        //             className='commentIpt'
-                        //             type="text"
-                        //             placeholder="请输入回复"
-                        //             onKeyDown={(event) => {
-                        //                 if (event.key === 'Enter') {
-                        //                     handleAddReply(index, event.target.value)
-                        //                     event.target.value = ''
-                        //                 }
-                        //             }}
-                        //         />
-                        // <div className={answer ? '' : 'hidden'}>
-                        //     {comment.replies && comment.replies.length > 0 && (
-                        //         <ul>
-                        //             {comment.replies.map((reply, replyIndex) => (
-                        //                 <div key={replyIndex}>
-                        //                     <span>李相夷</span>
-                        //                     <p>
-                        //                         {reply.text}
-                        //                         <span>
-                        //                             <button onClick={() => handleLikeComment(replyIndex)} className='btn'>
-                        //                                 <svg className="icon" aria-hidden="true">
-                        //                                     <use xlinkHref="#icon-a-44tubiao-208"></use>
-                        //                                 </svg>
-                        //                                 {reply.likes}
-                        //                             </button>
-                        //                         </span>
-                        //                         <button onClick={() => setAnswer(!answer)} className='btn'>
-                        //                             <svg className="icon" aria-hidden="true">
-                        //                                 <use xlinkHref="#icon-a-44tubiao-168"></use>
-                        //                             </svg>
-                        //                             回复
-                        //                         </button>
-                        //                     </p>
-                        //                 </div>
-                        //             ))}
-                        //         </ul>
-                        //     )}
-                        // </div>
-                        //     </div>
-                        // </div>
                         <>
-                            <SingleComment
-                                comment={comment}
-                                index={index}
-                                key={index}
-                                onLikesChange={handleLikeComment}
-                                onReplyAdd={handleAddReply}
+                            <div key={index}>
+                                <SingleComment
+                                    comment={comment}
+                                    index={index}
+                                    onLikesChange={handleLikeComment}
+                                    onReplyAdd={handleAddReply}
                             ></SingleComment>
+                            </div>
                             <div>
                                 {comment.replies && comment.replies.length > 0 && (
                                     <ul>
                                         {comment.replies.map((reply, replyIndex) => (
-                                            <SingleComment
-                                                key={replyIndex}
+                                            <div key={replyIndex}>
+                                                <SingleComment
                                                 comment={reply}
                                                 index={replyIndex}
                                                 onLikesChange={handleLikeComment}
                                                 onReplyAdd={handleAddReply}
                                             ></SingleComment>
+                                            </div>
                                         ))}
                                     </ul>
                                 )}

@@ -38,11 +38,10 @@ export default function MyEditor({ imageUploadConfig, socket }) {
     //     handleEditorChange(RichUtils.toggleBlockType(editorState, blockType))
     // }
     const handleSave = () => {
-        console.log('click')
         const contentState = editorState.getCurrentContent()
         //const rawContent = convertToRaw(contentState)
         //console.log(rawContent?.blocks[0]?.text,'rawContent')
-        console.log(stateToHTML(contentState), 'contentState')
+        //console.log(stateToHTML(contentState), 'contentState')
         socket.emit('sendPost', { data: stateToHTML(contentState) });
     }
     const handleLoad = () => {

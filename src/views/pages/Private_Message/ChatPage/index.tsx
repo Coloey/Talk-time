@@ -32,7 +32,7 @@ const ChatPage = ({ socket }) => {
     }, [])
     useEffect(() => {
         //console.log(messages, 'messages', (messages.filter(item => item.readStatus === 0).length))
-        dispatch({ type: 'initValue', payload: messages.filter(item => item.readStatus === 0).length })
+        dispatch({ type: 'initValue', payload: messages?.filter(item => item.readStatus === 0).length })
     }, [messages])
     useEffect(() => {
         socket.on(localStorage.getItem('userName'), (data) => setMessages([...messages, data]));

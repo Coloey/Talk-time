@@ -1,7 +1,7 @@
 import './index.styl'
 import { useState, useEffect } from 'react'
 import MyComment from '../Comment/index'
-export default function PostContent() {
+export default function PostContent({socket}) {
     const [showComment, setShowComment] = useState(false)
     const [commentCount, setCommentCount] = useState(0)
     const [likes, setLikes] = useState(0)
@@ -59,8 +59,7 @@ export default function PostContent() {
                     </svg>
                 </button>
             </div>
-            <MyComment show={showComment} onCommentsCount={handleCommentCount}></MyComment>
+            <MyComment show={showComment} onCommentsCount={handleCommentCount} socket={socket}></MyComment>
         </div>
-
     )
 }
