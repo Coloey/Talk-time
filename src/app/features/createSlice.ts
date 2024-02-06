@@ -8,7 +8,7 @@ export const reducer = (state, action) => {
       console.log(action.payload, 'action')
       return { ...state, messageCount: action.payload };
     case 'increment':
-      return { ...state, messageCount: state.messageCoun + 1 };
+      return { ...state, messageCount: state.messageCount + 1 };
     default:
       return state;
   }

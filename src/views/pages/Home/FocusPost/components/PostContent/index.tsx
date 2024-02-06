@@ -1,7 +1,7 @@
 import './index.styl'
 import { useState, useEffect } from 'react'
 import MyComment from '../Comment/index'
-export default function PostContent({socket}) {
+export default function PostContent({ socket }) {
     const [showComment, setShowComment] = useState(false)
     const [commentCount, setCommentCount] = useState(0)
     const [likes, setLikes] = useState(0)

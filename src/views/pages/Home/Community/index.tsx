@@ -5,14 +5,21 @@ export default function Community({ socket }) {
     const [showComment, setShowComment] = useState(false)
     const [commentCount, setCommentCount] = useState(0)
     const [likes, setLikes] = useState(0)
-    const contentRef=useRef(null)
+    const [content, setContent] = useState('')
+    const contentRef = useRef(null)
     useEffect(() => {
-        socket.on('post', (data) => {
-            console.log(data)
-            const dom = document.querySelector('.richContent')
-            dom.innerHTML = data;
-            //contentRef.current.inneHTML = data;
+        //const dom = document.querySelector('.richContent')
+        //console.log(contentRef.current, 'dom')
+        socket.on('post', ({ data }) => {
+            //console.log(data)
+            setContent(data)
+            console.log(content, 'content1')
         })
+        // console.log(content)
+        // if (content) {
+        //     dom.innerHTML = content;
+        // }
+        //console.log(content, 'content2')
     }, [])
     const handleComment = () => {
         setShowComment(!showComment)
@@ -23,7 +30,7 @@ export default function Community({ socket }) {
         setCommentCount(val)
     }
     return (
-       <div className="post-container">
+        <div className="post-container">
             <div className="authorInfo">
                 <span className="avatar"></span>
                 <div className="authorInfo-content">
@@ -32,7 +39,8 @@ export default function Community({ socket }) {
                 </div>
             </div>
             <h2 className="title">记忆、睡眠、情绪和大脑有什么关系？</h2>
-            <div className="richContent" ref={contentRef}>
+            <div className="richContent" ref={contentRef} id='richContent'>
+                {content}
             </div>
             <div className="footer">
                 <span>
@@ -65,7 +73,7 @@ export default function Community({ socket }) {
                     </svg>
                 </button>
             </div>
-            <MyComment show={showComment} onCommentsCount={handleCommentCount}></MyComment>
+            <MyComment show={showComment} onCommentsCount={handleCommentCount} socket={socket}></MyComment>
         </div>
     )
 }

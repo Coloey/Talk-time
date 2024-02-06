@@ -15,6 +15,7 @@ const ChatPage = ({ socket }) => {
     //const [messagesCount, setMessagesCount] = useState(0)
     const messageCount = useSelector((state) => state.messageCount);
     const dispatch = useDispatch()
+    const fromUser = localStorage.getItem('userName')
     useEffect(() => {
         const getUsers = async () => {
             const res = await getAllUsers();
@@ -30,10 +31,16 @@ const ChatPage = ({ socket }) => {
         }
         getMessage()
     }, [])
-    useEffect(() => {
-        //console.log(messages, 'messages', (messages.filter(item => item.readStatus === 0).length))
-        dispatch({ type: 'initValue', payload: messages?.filter(item => item.readStatus === 0).length })
-    }, [messages])
+    // useEffect(() => {
+    //     // let len;
+    //     // for (let i = 0; i < messages.length; i++) {
+    //     //     if (messages[i].readStatus === 0) {
+    //     //         len++;
+    //     //     }
+    //     // }
+    //     // dispatch({ type: 'initValue', payload: len })
+    //     // console.log(messages)
+    // }, [messages])
     useEffect(() => {
         socket.on(localStorage.getItem('userName'), (data) => setMessages([...messages, data]));
     }, [socket, messages]);
@@ -58,8 +65,15 @@ const ChatPage = ({ socket }) => {
     const receiveName = (val) => {
         setToUser(val)
     }
-    const handleReadedMessages = (myMessages) => {
-        setMessages(myMessages)
+    const handleReadedMessages = (name) => {
+        // 点击则已读消息，消息条数减少,设置相应消息状态为已读
+        const newMessages = (messages).map((item) => {
+            if (item.toUser === name && item.fromUser === fromUser) {
+                item.readStatus = 1;
+            }
+            return item
+        })
+        setMessages(newMessages)
     }
     return (
         <div className="chat">

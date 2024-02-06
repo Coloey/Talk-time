@@ -51,11 +51,11 @@ exports.updatePassword = (req, res) => {
   });
 };
 exports.storeMessages = (req, res) => {
-  let { fromUser, toUser, text, timestamp } = req.body;
+  let { fromUser, toUser, text, timestamp, readStatus } = req.body;
   text = text.replace(regex, (p) => `emoji(${p.codePointAt(0)})`)
   const sql =
-    "insert into chat_messages(fromUser, toUser, text, timestamp) values (?,?,?,?)";
-  db.query(sql, [fromUser, toUser, text, timestamp], (err, result) => {
+    "insert into chat_messages(fromUser, toUser, text, timestamp,readStatus) values (?,?,?,?,?)";
+  db.query(sql, [fromUser, toUser, text, timestamp, readStatus], (err, result) => {
     if (err) return res.cc(err);
     if (result.affectedRows !== 1) return res.cc("聊天信息存储失败");
     console.log(result, "store");
@@ -66,7 +66,7 @@ exports.getMessages = (req, res) => {
   const sql = "select * from chat_messages";
   db.query(sql, (err, result) => {
     if (err) return res.cc(err);
-    console.log(result, "message");
+    //console.log(result, "message");
     res.send({ status: 0, data: result });
   });
 };

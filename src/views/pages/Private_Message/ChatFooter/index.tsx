@@ -31,7 +31,8 @@ const ChatFooter = ({ socket, toUser }) => {
                     fromUser,
                     toUser,
                     text: message,
-                    timestamp: moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
+                    timestamp: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+                    readStatus: 0,
                 }
             )
             console.log(res, 'client store')

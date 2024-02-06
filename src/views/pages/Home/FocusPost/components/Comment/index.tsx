@@ -4,7 +4,7 @@ import Icon from '@ant-design/icons';
 import { useState, useEffect } from 'react'
 import moment from 'moment'
 import SingleComment from './SingleComment';
-export default function MyComment({ show, onCommentsCount, socket}) {
+export default function MyComment({ show, onCommentsCount, socket }) {
     const [comments, setComments] = useState([])
     const [newComment, setNewComment] = useState('')
     // const [commentCount, setCommentCount] = useState(0)
@@ -40,10 +40,13 @@ export default function MyComment({ show, onCommentsCount, socket}) {
         //console.log(comments)
     }
     useEffect(() => {
-        socket.on('updateComments', (data) => {
-            console.log(data,'updateComments')
+        socket.on('post', (data) => {
+            console.log(data, 'postContent')
         })
-    },[])
+        socket.on('updateComments', (data) => {
+            console.log(data, 'updateComments')
+        })
+    }, [])
     // const handleAnswer = (val) => {
     //     setAnswer(val)
     // }
@@ -75,7 +78,7 @@ export default function MyComment({ show, onCommentsCount, socket}) {
                                     index={index}
                                     onLikesChange={handleLikeComment}
                                     onReplyAdd={handleAddReply}
-                            ></SingleComment>
+                                ></SingleComment>
                             </div>
                             <div>
                                 {comment.replies && comment.replies.length > 0 && (
@@ -83,11 +86,11 @@ export default function MyComment({ show, onCommentsCount, socket}) {
                                         {comment.replies.map((reply, replyIndex) => (
                                             <div key={replyIndex}>
                                                 <SingleComment
-                                                comment={reply}
-                                                index={replyIndex}
-                                                onLikesChange={handleLikeComment}
-                                                onReplyAdd={handleAddReply}
-                                            ></SingleComment>
+                                                    comment={reply}
+                                                    index={replyIndex}
+                                                    onLikesChange={handleLikeComment}
+                                                    onReplyAdd={handleAddReply}
+                                                ></SingleComment>
                                             </div>
                                         ))}
                                     </ul>
