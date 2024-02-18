@@ -1,79 +1,148 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 //import PostContent from '../FocusPost/components/PostContent'
 import MyComment from '../FocusPost/components/Comment'
+import { getPosts } from '../../../../utils/api'
+import { message } from 'antd'
+import { updateLikes, updatePost } from '../../../../utils/api'
+import moment from 'moment'
 export default function Community({ socket }) {
-    const [showComment, setShowComment] = useState(false)
+    const [showComment, setShowComment] = useState([])
     const [commentCount, setCommentCount] = useState(0)
     const [likes, setLikes] = useState(0)
+    const [postItems, setPostItems] = useState([])
     const [content, setContent] = useState('')
-    const contentRef = useRef(null)
-    useEffect(() => {
-        //const dom = document.querySelector('.richContent')
-        //console.log(contentRef.current, 'dom')
-        socket.on('post', ({ data }) => {
-            //console.log(data)
-            setContent(data)
-            console.log(content, 'content1')
-        })
-        // console.log(content)
-        // if (content) {
-        //     dom.innerHTML = content;
-        // }
-        //console.log(content, 'content2')
-    }, [])
-    const handleComment = () => {
-        setShowComment(!showComment)
-        //console.log(showComment)
+    const [messageApi, contextHolder] = message.useMessage();
+    const [post_id, setPostId] = useState()
+    const getPostsContent = async () => {
+        const res = await getPosts();
+        setPostItems(res.data.data);
+        console.log(res.data.data, 'res')
     }
-    const handleCommentCount = (val) => {
+    useEffect(() => {
+        getPostsContent()
+    }, [likes])
+    useEffect(() => {
+        socket.on('updateLikes', ({ likes, id }) => {
+            // 属于宏任务
+            //console.log(postItems, 'old postItems', likes, 'likes', id, 'id')
+            //在状态更新完成后执行某些操作，可以使用setState()的回调函数形式
+            setPostItems(prevPostItems => {
+                const updatedPostItems = prevPostItems.map((item) => {
+                    if (item.post_id === id) {
+                        item.likes = likes;
+                    }
+                    return item;
+                });
+                return updatedPostItems;
+            });
+            //console.log(postItems, 'socket后的postItems')
+        })
+        // socket.on('updatePost', ({ user_id, title, content, created_at }) => {
+        //     setPostItems(prevPostItems => {
+        //         console.log(prevPostItems, 'prevPostItems')
+        //         const updatedPostItems = prevPostItems.push({
+        //             post_id: prevPostItems[prevPostItems.length - 1].post_id + 1,
+        //             user_id,
+        //             title,
+        //             content,
+        //             created_at
+        //         })
+        //         return updatedPostItems;
+        //     });
+        // })
+    }, [socket])
+    const handleComment = (index: number) => {
+        // console.log(index, 'index', showComment)
+        const newShowComment = [...showComment]
+        newShowComment[index] = !newShowComment[index]
+        setShowComment(newShowComment)
+        // console.log(showComment, 'newcomment')
+    }
+    const handleCommentCount = (val, id) => {
         //console.log(val)
         setCommentCount(val)
+        setPostId(id)
     }
+    const handleLikes = async (item, id) => {
+        let res = await updateLikes({
+            user_id: JSON.parse(localStorage.getItem('userInfo'))?.user_id,
+            post_id: id,
+            like_date: moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
+        })
+        console.log(res.data.data.length, 'updateLikes likes');
+        const likes = res.data.data.length
+        //setPostItems(newPostItems)
+        // 更新post表中赞数。。。不同用户赞了需要更新?
+        res = await updatePost({
+            likes,
+            post_id: id,
+        })
+        setLikes(likes);
+        // 每个页面都需要更新
+        socket.emit('sendLikes', { likes, id })
+    }
+    useEffect(() => {
+        setShowComment(new Array(postItems.length).fill(false))
+    }, [postItems.length])
     return (
-        <div className="post-container">
-            <div className="authorInfo">
-                <span className="avatar"></span>
-                <div className="authorInfo-content">
-                    <span className="authorInfo-head">小李飞刀</span>
-                    <span className="authorInfo-detail">武功高手</span>
+        <>
+            {postItems.map((postItem, index) => (
+                <div
+                    className="post-container"
+                    key={postItem.post_id}
+                >
+                    <div className="authorInfo">
+                        <span className="avatar"></span>
+                        <div className="authorInfo-content">
+                            <span className="authorInfo-head">{postItem.name}</span>
+                            {/* 转成正常时间 */}
+                            <span className="authorInfo-detail">{postItem.created_at}</span>
+                        </div>
+                    </div>
+                    <h2 className="title" dangerouslySetInnerHTML={{ __html: postItem.title }}></h2>
+                    <div className="richContent" dangerouslySetInnerHTML={{ __html: postItem.content }}>
+                    </div>
+                    <div className="footer">
+                        <span>
+                            <button className='btn' onClick={() => handleLikes(postItem.likes, postItem.post_id)}>
+                                <svg className="icon" aria-hidden="true">
+                                    <use xlinkHref="#icon-a-44tubiao-208"></use>
+                                </svg>
+                                赞同{postItem.likes ? postItem.likes : 0}
+                            </button>
+                        </span>
+                        <button className='btn' onClick={() => handleComment(index)}>
+                            <svg className="icon" aria-hidden="true">
+                                <use xlinkHref="#icon-a-44tubiao-168"></use>
+                            </svg>
+                            {!showComment[index]
+                                ? (<span>{post_id === postItem.post_id ? commentCount + '条' : ''}评论</span>)
+                                : (<span>收起评论</span>)
+                            }
+                        </button>
+                        <button className='btn'>
+                            <svg className="icon" aria-hidden="true">
+                                <use xlinkHref="#icon-a-44tubiao-242"></use>
+                            </svg>
+                            收藏
+                        </button>
+                        <button className='btn'>
+                            <span>收起</span>
+                            <svg className="icon" aria-hidden="true">
+                                <use xlinkHref="#icon-jiantou_liebiaoshouqi"></use>
+                            </svg>
+                        </button>
+                    </div>
+                    <MyComment
+                        show={showComment[index]}
+                        onCommentsCount={handleCommentCount}
+                        socket={socket}
+                        author={postItem.name}
+                        post_id={postItem.post_id}
+                    >
+                    </MyComment>
                 </div>
-            </div>
-            <h2 className="title">记忆、睡眠、情绪和大脑有什么关系？</h2>
-            <div className="richContent" ref={contentRef} id='richContent'>
-                {content}
-            </div>
-            <div className="footer">
-                <span>
-                    <button className='btn' onClick={() => setLikes(likes + 1)}>
-                        <svg className="icon" aria-hidden="true">
-                            <use xlinkHref="#icon-a-44tubiao-208"></use>
-                        </svg>
-                        赞同{likes}
-                    </button>
-                </span>
-                <button className='btn' onClick={handleComment}>
-                    <svg className="icon" aria-hidden="true">
-                        <use xlinkHref="#icon-a-44tubiao-168"></use>
-                    </svg>
-                    {!showComment
-                        ? (<span>{commentCount}条评论</span>)
-                        : (<span>收起评论</span>)
-                    }
-                </button>
-                <button className='btn'>
-                    <svg className="icon" aria-hidden="true">
-                        <use xlinkHref="#icon-a-44tubiao-242"></use>
-                    </svg>
-                    收藏
-                </button>
-                <button className='btn'>
-                    <span>收起</span>
-                    <svg className="icon" aria-hidden="true">
-                        <use xlinkHref="#icon-jiantou_liebiaoshouqi"></use>
-                    </svg>
-                </button>
-            </div>
-            <MyComment show={showComment} onCommentsCount={handleCommentCount} socket={socket}></MyComment>
-        </div>
+            ))}
+        </>
     )
 }

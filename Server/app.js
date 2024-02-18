@@ -84,17 +84,23 @@ socketIO.on("connection", function (socket) {
       console.log(toUser + "不在线");
     }
   });
-  socket.on("sendPost", (obj) => {
-    console.log(obj,'obj')
-    // console.log(obj);
-    // for (let username in onlineUsers) {
-    //   // console.log(username);
-    socketIO.emit('post',obj);
-    // }
+  socket.on("sendPost", ({user_id,title,content,created_at}) => {
+    console.log(user_id,title,content,created_at,'obj')
+    socketIO.emit('updatePost',{user_id,title,content,created_at});
   });
-  socket.on('sendComments', (obj) => {
-    console.log(obj, 'comments')
-    socketIO.emit('updateComments',obj)
+  socket.on('sendLikes', ({likes,id}) => {
+    console.log(likes,'likes',id,'id')
+    socketIO.emit('updateLikes', {likes, id})
+  })
+  socket.on('addComment',(obj) => {
+    const {post_id} = obj
+    socketIO.emit(`${post_id}`, obj)
+    console.log(obj, 'updateComment')
+  })
+  socket.on('addReply', (obj) => {
+    console.log(obj, 'addReply')
+    const {post_id} = obj
+    socketIO.emit(`reply${post_id}`,obj)
   })
   socket.on("disconnect", () => {
     console.log(`${socket.id}断开连接`);
@@ -102,9 +108,7 @@ socketIO.on("connection", function (socket) {
       if(val === socket.id){
         delete onlineUsers[key]
       }
-    }
-        // console.log(users);
-        
+    }   
         // 发送用户列表到客户端
         socketIO.emit('newUserResponse', Array.from(onlineUsers));
         socket.disconnect();
@@ -115,66 +119,3 @@ socketIO.on("connection", function (socket) {
 server.listen(4000, () => {
   console.log("run in http://127.0.0.1:4000");
 });
-// const express = require('express');
-// const app = express();
-// const http = require('http');
-// const server = http.createServer(app);
-// const cors = require('cors');
-// const { Server } = require("socket.io");
-
-// const PORT = 4000
-// app.use(cors());
-// let users = [];
-
-// const socketIO = new Server(server, {
-//     cors: {
-//         origin: "http://127.0.0.1:5173",
-//     }
-// });
-
-// app.get('/api', (req, res) => {
-//     res.json({
-//       message: 'Hello world',
-//     });
-// });
-
-// socketIO.on('connection', (socket) => {
-//     console.log(`⚡: ${socket.id} 用户已连接!`);
-//     socket.on('connect_error', (error) => {
-//       console.log(socket.connected); // false
-//       console.log(error); // 连接错误信息
-//     });
-//     // 监听和在控制台打印消息
-//     socket.on('message', (data) => {
-//         console.log(data);
-//         socketIO.emit('messageResponse', data);
-//     });
-
-//     socket.on('typing', (data) => socket.broadcast.emit('typingResponse', data));
-
-
-//     // 监听新用户的加入
-//     socket.on('newUser', (data) => {
-//         // 添加新用户到 users 中
-//         users.push(data);
-//         // console.log(users);
-
-//         // 发送用户列表到客户端
-//         socketIO.emit('newUserResponse', users);
-//     });
-
-//     socket.on('disconnect', () => {
-//         console.log('🔥: 一个用户已断开连接');
-//         // 当用户下线的时候更新用户列表
-//         users = users.filter((user) => user.socketID !== socket.id);
-//         // console.log(users);
-        
-//         // 发送用户列表到客户端
-//         socketIO.emit('newUserResponse', users);
-//         socket.disconnect();
-//     });
-// });
-
-// server.listen(PORT, () => {
-//     console.log(`Server listening on ${PORT}`);
-// });

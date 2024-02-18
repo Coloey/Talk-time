@@ -20,9 +20,11 @@ const Login = ({ socket }) => {
             //console.log(res)
         }
         navigate(RouteIndex.HOME)
-        await getUserInfo()
+        const res = await getUserInfo()
+        console.log(JSON.stringify(res.data.data), 'userInfo')
         //console.log(res, 'userInfo')
         localStorage.setItem('userName', userName);
+        localStorage.setItem('userInfo', JSON.stringify(res.data.data))
         socket.emit("addUser", { username: localStorage.getItem('userName'), socketID: socket.id });
         navigate(RouteIndex.HOME)
     };

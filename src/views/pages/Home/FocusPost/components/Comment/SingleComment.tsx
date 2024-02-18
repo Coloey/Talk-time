@@ -13,11 +13,11 @@ export default function SingleComment({ comment, index, onLikesChange, onReplyAd
 
     return (
         <div className="commentContainer">
-            <div className="avatar">头像</div>
+            <div className="avatar"></div>
             <div className='commentContent'>
-                <span>李相夷</span>
+                <span>{comment.fromUser}回复{comment.toUser}</span>
                 <p>
-                    {comment.text}
+                    {comment.comment_text}
                     <span>
                         <button onClick={() => sendLikeComment(index)} className='btn'>
                             <svg className="icon" aria-hidden="true">
@@ -39,7 +39,7 @@ export default function SingleComment({ comment, index, onLikesChange, onReplyAd
                     placeholder="请输入回复"
                     onKeyDown={(event) => {
                         if (event.key === 'Enter') {
-                            sendAddReply(index, event.target.value)
+                            sendAddReply(comment.fromUser, event.target.value)
                             event.target.value = ''
                         }
                     }}

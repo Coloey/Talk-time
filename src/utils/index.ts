@@ -2,6 +2,8 @@ import axios from "axios";
 import { message } from 'antd'
 import { RouteIndex } from "../types/app";
 import { redirect } from "react-router-dom";
+import { message } from 'antd';
+import Loading from "../views/components/Loading/index";
 //创建一个axios实例
 const instance = axios.create({
   baseURL: "http://127.0.0.1:4000",
@@ -17,8 +19,7 @@ let requestCount = 0;
 // const showLoading = () => {
 //   if (requestCount === 0 && !loading) {
 //     //第一次发送请求并且没有loading加载loaing
-//     loading = messageApi.open({
-//       type: 'loading',
+//     loading = message.loading({
 //       content: 'loading...',
 //       duration: 0,
 //     })
@@ -63,7 +64,7 @@ instance.interceptors.response.use(
         },
         200: function (res) {
           //获取用户信息成功后存储在localStorage里和store
-          //store.commit("saveUserInfo", res.data.data);
+          // store.commit("saveUserInfo", res.data.data);
           window.localStorage.setItem(
             "userInfo",
             JSON.stringify(res.data.data)
@@ -86,8 +87,8 @@ instance.interceptors.response.use(
     } else {
       message.error(response.data.message);
       redirect(RouteIndex.SIGNIN);
-      window.localStorage.removeItem("token");
-      window.localStorage.removeItem("userInfo");
+      // window.localStorage.removeItem("token");
+      //window.localStorage.removeItem("userInfo");
       return Promise.reject(response);
     }
   },

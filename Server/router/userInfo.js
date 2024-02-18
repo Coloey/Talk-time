@@ -14,4 +14,9 @@ router.post('/updatePassword',expressJoi(update_password_schema),userInfo_handle
 router.get('/getAllUsers', userInfo_handler.allUsers)
 router.post('/storeMessages', userInfo_handler.storeMessages)
 router.get('/getMessages', userInfo_handler.getMessages)
+router.post('/storePostContent', userInfo_handler.storePost)
+router.get('/getPosts', userInfo_handler.getPosts)
+router.post('/updatePost', userInfo_handler.updatePost)
+router.post('/updateLikes', userInfo_handler.updateLikes)
+router.post('/storeComment', userInfo_handler.storeComment)
 module.exports=router

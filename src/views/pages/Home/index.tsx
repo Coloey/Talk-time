@@ -5,20 +5,13 @@ import './index.styl'
 export default function Home() {
     const navigate = useNavigate()
     useEffect(() => {
-        navigate(RouteIndex.FOCUS_POST)
+        navigate(RouteIndex.COMMUNITY)
     }, [])
     return (
         <div className="page">
             <div className="container">
                 <div className="left">
                     <div className="tabs">
-                        <NavLink to={RouteIndex.FOCUS_POST}
-                            className={
-                                ({ isActive }) =>
-                                    isActive
-                                        ? 'tab tab-active'
-                                        : 'tab'
-                            }>关注</NavLink>
                         <NavLink to={RouteIndex.COMMUNITY}
                             className={
                                 ({ isActive }) =>
@@ -28,6 +21,14 @@ export default function Home() {
                             }>
                             社区
                         </NavLink>
+                        <NavLink to={RouteIndex.FOCUS_POST}
+                            className={
+                                ({ isActive }) =>
+                                    isActive
+                                        ? 'tab tab-active'
+                                        : 'tab'}
+                        >
+                            关注</NavLink>
                     </div>
                     <Outlet />
                 </div>

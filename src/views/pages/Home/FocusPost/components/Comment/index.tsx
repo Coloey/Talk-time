@@ -4,59 +4,102 @@ import Icon from '@ant-design/icons';
 import { useState, useEffect } from 'react'
 import moment from 'moment'
 import SingleComment from './SingleComment';
-export default function MyComment({ show, onCommentsCount, socket }) {
+import { storeComment } from '../../../../../../utils/api';
+export default function MyComment({ show, onCommentsCount, socket, author, post_id }) {
     const [comments, setComments] = useState([])
     const [newComment, setNewComment] = useState('')
+    const [hasBorder, setHasBorder] = useState(false)
+    //const [commentInfo, setCommentInfo] = useState([])
     // const [commentCount, setCommentCount] = useState(0)
     const [answer, setAnswer] = useState(false)
     const handleInputChange = (event) => {
         setNewComment(event.target.value)
     }
-    // const countComments = () => {
-    //     return comments.length + comments[0]?.replies.length || 0
-    // }
-    const handleAddComment = (name) => {
+    const [name, setName] = useState('')
+    const fromUser = localStorage.getItem('userName');
+    const handleAddComment = async (name) => {
         if (newComment !== '') {
-            const newComments = [...comments, { id: name, text: newComment, likes: 0, replies: [] }]
-            setComments(newComments)
+            const timestamp = moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
+            socket.emit('addComment', {
+                fromUser,
+                toUser: author,
+                comment_text: newComment,
+                replies: [],
+                post_id,
+                timestamp
+            })
+            // 储存评论
+            const res = await storeComment({
+                post_id,
+                user_id: JSON.parse(localStorage.getItem('userInfo'))?.user_id,
+                comment_text: newComment,
+                timestamp,
+                fromUser,
+                toUser: author
+            })
+            console.log(res, 'storeComment')
+            // setComments(newComments)
             setNewComment('')
         }
     }
     const handleLikeComment = (index) => {
-        const updatedComments = [...comments];
-        console.log(updatedComments)
-        updatedComments[index].likes += 1
-        setComments(updatedComments)
+        // const updatedComments = [...comments];
+        // console.log(updatedComments)
+        // updatedComments[index].likes += 1
+        // setComments(updatedComments)
     }
-    const handleAddReply = (index, replyText) => {
-        const updatedComments = [...comments]
-        // console.log(index, updatedComments[index])
-        // if (!updatedComments[index].replies) {
-        //     updatedComments[index].replies = []
-        // }
-        updatedComments[0].replies.push({ text: replyText, likes: 0, replies: [] })
-        setComments(updatedComments)
-        socket.emit('sendComments', { updatedComments })
+    const handleAddReply = (toUser, replyText) => {
+        //const updatedComments = [...comments]
+        //updatedComments[0].replies.push({ comment_text: replyText, likes: 0, replies: [] })
+
+        if (replyText !== '') {
+            socket.emit('addReply', {
+                fromUser,
+                toUser,
+                comment_text: replyText,
+                replies: [],
+                post_id,
+                timestamp: moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
+            })
+        }
         //console.log(comments)
     }
     useEffect(() => {
-        socket.on('post', (data) => {
-            console.log(data, 'postContent')
+        // console.log(`${post_id}`)
+        socket.on(`${post_id}`, (data) => {
+            console.log(data, 'updateComment')
+            console.log(comments, 'preComments')
+            setComments((preComments) => {
+                if (preComments.indexOf(data) === -1) {
+                    return [...preComments, data]
+                }
+                return preComments
+            })
         })
-        socket.on('updateComments', (data) => {
-            console.log(data, 'updateComments')
+        socket.on(`reply${post_id}`, (data) => {
+            setComments((preComments) => {
+                const updateComments = [...preComments]
+                if (preComments[0].replies.indexOf(data) === -1) {
+                    updateComments[0].replies.push(data);
+                }
+                return updateComments;
+            })
+            //console.log(data, 'updateReply')
         })
-    }, [])
-    // const handleAnswer = (val) => {
-    //     setAnswer(val)
-    // }
+    }, [socket])
     useEffect(() => {
-        //console.log(comments.flat(Infinity).length)
-        onCommentsCount(comments.length + comments[0]?.replies?.length || 0)
+        console.log(comments, 'comments')
+    }, [comments])
+    useEffect(() => {
+        onCommentsCount(comments.length + comments[0]?.replies?.length || 0, comments[0]?.post_id)
+        if (comments.length > 0) {
+            setHasBorder(true)
+        } else {
+            setHasBorder(false)
+        }
     }, [comments.length + comments[0]?.replies?.length])
 
     return (
-        // <div className={!show ? 'hidden' : ''}>comment</div>
         <div className={!show ? 'hidden' : ''}>
             <div className="commentIptDiv">
                 <input
@@ -68,7 +111,7 @@ export default function MyComment({ show, onCommentsCount, socket }) {
                 />
                 <button className='addBtn' onClick={handleAddComment}>添加评论</button>
             </div>
-            <div className='commentContainers'>
+            <div className={`commentContainers ${hasBorder ? 'border' : ''}`}>
                 {
                     comments.map((comment, index) => (
                         <>
@@ -97,7 +140,6 @@ export default function MyComment({ show, onCommentsCount, socket }) {
                                 )}
                             </div>
                         </>
-
                     ))
                 }
             </div>

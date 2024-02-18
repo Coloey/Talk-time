@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { Editor, EditorState, RichUtils, convertToRaw, convertFromRaw } from 'draft-js';
 import 'draft-js/dist/Draft.css';
@@ -7,12 +7,19 @@ import InlineTypesControl from './InlineTypesControl/index';
 import BlockTypesControl from './BlockTypeControl/index';
 import FontSizeControl from './FontSizeControl/index';
 import ImageControl from './ImageControl/index';
+import { storePostContent } from '../../../utils/api';
+import { useNavigate } from 'react-router-dom';
+import { RouteIndex } from '../../../types/app';
+import moment from 'moment';
+import { message } from 'antd';
 export default function MyEditor({ imageUploadConfig, socket }) {
     const [editorState, setEditorState] = useState(
         () => EditorState.createEmpty(),
     );
     // const [dymanicCssList, setDy]
     const editorRef = useRef(null);
+    const navigate = useNavigate();
+    // const [title, setTitle, getTitle] = useGetState();
     //editor获得焦点
     const onEditorFocus = () => {
         const editor = editorRef.current
@@ -37,12 +44,45 @@ export default function MyEditor({ imageUploadConfig, socket }) {
     // const handleBlockType = (blockType) => {
     //     handleEditorChange(RichUtils.toggleBlockType(editorState, blockType))
     // }
-    const handleSave = () => {
+    const handleSave = async () => {
         const contentState = editorState.getCurrentContent()
-        //const rawContent = convertToRaw(contentState)
-        //console.log(rawContent?.blocks[0]?.text,'rawContent')
-        //console.log(stateToHTML(contentState), 'contentState')
-        socket.emit('sendPost', { data: stateToHTML(contentState) });
+        let content = stateToHTML(contentState)
+        let contentArray = content.split('\n')
+        let title;
+        // console.log(contentArray.slice(1).join(''), 'contentArray')
+        if (contentArray.length > 0) {
+            title = contentArray[0]
+            if (contentArray.length >= 2) {
+                content = contentArray.slice(1).join('')
+            }
+        } else {
+            title = content;
+        }
+        const user_id = JSON.parse(localStorage.getItem('userInfo'))?.user_id;
+        const res = await storePostContent({
+            content: content,
+            updated_at: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+            user_id,
+            title: title,
+            name: localStorage.getItem('userName'),
+            likes: 0,
+            commentCount: 0,
+            haveLiked: 0
+        })
+        //console.log(res.data, 'storePostContent')
+        if (res.data.status === 0) {
+            navigate(RouteIndex.COMMUNITY)
+        }
+        socket.emit('sendPost',
+            {
+                user_id,
+                title,
+                content,
+                created_at: moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
+            }
+        )
+        //message.success(res.data.message)
+
     }
     const handleLoad = () => {
         const rawContent = '{"blocks":[{"key":"1gs7c","text":"Hello, Draft.js!","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}';

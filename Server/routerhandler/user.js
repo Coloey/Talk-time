@@ -48,7 +48,7 @@ exports.login=(req,res)=>{
         const user={...result[0],password:"",user_pic:""}
         const config=require('../config')
         //令牌是凭据，为了保证安全问题，不应该将令牌保留超过所需的时间
-        const tokenStr=jwt.sign(user,config.jwtSecrectKey,{expiresIn:'10h'})
+        const tokenStr=jwt.sign(user,config.jwtSecrectKey,{expiresIn:'24h'})
         //将生成的token响应给客户端
         res.send({
             status:0,

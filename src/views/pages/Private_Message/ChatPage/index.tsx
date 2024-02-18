@@ -30,7 +30,7 @@ const ChatPage = ({ socket }) => {
             //dispatch({ type: 'initValue', [messages.filter(item => item.readStaus === false).length]})
         }
         getMessage()
-    }, [])
+    }, [socket])
     // useEffect(() => {
     //     // let len;
     //     // for (let i = 0; i < messages.length; i++) {

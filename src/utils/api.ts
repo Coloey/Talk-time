@@ -55,3 +55,37 @@ export const getMessages = () => {
         method: 'get'
     })
 }
+export const storePostContent = (data) => {
+    return axios({
+        url: '/my/storePostContent',
+        method: 'post',
+        data: qs.stringify(data)
+    })
+}
+export const getPosts = (data) => {
+    return axios({
+        url: '/my/getPosts',
+        method: 'get'
+    })
+}
+export const updatePost = (data) => {
+    return axios({
+        url: '/my/updatePost',
+        method: 'post',
+        data: qs.stringify(data)
+    })
+}
+export const updateLikes = (data) => {
+    return axios({
+        url: '/my/updateLikes',
+        method: 'post',
+        data: qs.stringify(data)
+    })
+}
+export const storeComment = (data) => {
+    return axios({
+        url: '/my/storeComment',
+        method: 'post',
+        data: qs.stringify(data)
+    })
+}
