@@ -4,7 +4,7 @@ import Icon from '@ant-design/icons';
 import { useState, useEffect } from 'react'
 import moment from 'moment'
 import SingleComment from './SingleComment';
-import { storeComment } from '../../../../../../utils/api';
+import { storeComment, getComments, storeReply } from '../../../../../../utils/api';
 export default function MyComment({ show, onCommentsCount, socket, author, post_id }) {
     const [comments, setComments] = useState([])
     const [newComment, setNewComment] = useState('')
@@ -42,25 +42,42 @@ export default function MyComment({ show, onCommentsCount, socket, author, post_
             setNewComment('')
         }
     }
+    // useEffect(() => {
+    //     const getMyComment = async () => {
+    //         const res = await getComment({ fromUser })
+    //         console.log(res, 'getMyComment');
+    //     }
+    // }, [])
     const handleLikeComment = (index) => {
         // const updatedComments = [...comments];
         // console.log(updatedComments)
         // updatedComments[index].likes += 1
         // setComments(updatedComments)
     }
-    const handleAddReply = (toUser, replyText) => {
+    const handleAddReply = async (toUser, replyText, comment_id) => {
+
         //const updatedComments = [...comments]
         //updatedComments[0].replies.push({ comment_text: replyText, likes: 0, replies: [] })
 
         if (replyText !== '') {
+            const timestamp = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
             socket.emit('addReply', {
                 fromUser,
                 toUser,
                 comment_text: replyText,
                 replies: [],
                 post_id,
-                timestamp: moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
+                timestamp
             })
+            const res = await storeReply({
+                comment_id,
+                user_id: JSON.parse(localStorage.getItem('userInfo'))?.user_id,
+                comment_text: replyText,
+                fromUser,
+                toUser,
+                created_at: timestamp
+            })
+            console.log(res, 'storeReply')
         }
         //console.log(comments)
     }
@@ -88,8 +105,20 @@ export default function MyComment({ show, onCommentsCount, socket, author, post_
         })
     }, [socket])
     useEffect(() => {
-        console.log(comments, 'comments')
-    }, [comments])
+        const getMyComment = async () => {
+            const res = await getComments()
+            if (res && res.data.status === 0) {
+                setComments((preComments) => {
+                    const updatedComments = res.data.data;
+                    return updatedComments;
+                })
+            }
+        }
+        getMyComment()
+    }, [])
+    // useEffect(() => {
+    //     console.log(comments, 'comments')
+    // }, [comments])
     useEffect(() => {
         onCommentsCount(comments.length + comments[0]?.replies?.length || 0, comments[0]?.post_id)
         if (comments.length > 0) {
@@ -116,24 +145,30 @@ export default function MyComment({ show, onCommentsCount, socket, author, post_
                     comments.map((comment, index) => (
                         <>
                             <div key={index}>
-                                <SingleComment
-                                    comment={comment}
-                                    index={index}
-                                    onLikesChange={handleLikeComment}
-                                    onReplyAdd={handleAddReply}
-                                ></SingleComment>
+                                {comment.post_id === post_id &&
+                                    <SingleComment
+                                        comment={comment}
+                                        index={index}
+                                        onLikesChange={handleLikeComment}
+                                        onReplyAdd={handleAddReply}
+
+                                    ></SingleComment>
+                                }
                             </div>
                             <div>
                                 {comment.replies && comment.replies.length > 0 && (
                                     <ul>
                                         {comment.replies.map((reply, replyIndex) => (
                                             <div key={replyIndex}>
-                                                <SingleComment
-                                                    comment={reply}
-                                                    index={replyIndex}
-                                                    onLikesChange={handleLikeComment}
-                                                    onReplyAdd={handleAddReply}
-                                                ></SingleComment>
+                                                {reply.post_id === post_id &&
+                                                    <SingleComment
+                                                        comment={reply}
+                                                        index={replyIndex}
+                                                        onLikesChange={handleLikeComment}
+                                                        onReplyAdd={handleAddReply}
+
+                                                    ></SingleComment>
+                                                }
                                             </div>
                                         ))}
                                     </ul>

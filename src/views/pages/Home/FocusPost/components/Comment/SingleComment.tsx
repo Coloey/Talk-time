@@ -39,7 +39,7 @@ export default function SingleComment({ comment, index, onLikesChange, onReplyAd
                     placeholder="请输入回复"
                     onKeyDown={(event) => {
                         if (event.key === 'Enter') {
-                            sendAddReply(comment.fromUser, event.target.value)
+                            sendAddReply(comment.fromUser, event.target.value, comment.comment_id)
                             event.target.value = ''
                         }
                     }}

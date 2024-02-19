@@ -89,3 +89,23 @@ export const storeComment = (data) => {
         data: qs.stringify(data)
     })
 }
+export const getCommentWithReplies = (data) => {
+    return axios({
+        url: '/my/getCommentWithReplies',
+        method: 'get',
+        data: data
+    })
+}
+export const storeReply = (data) => {
+    return axios({
+        url: '/my/storeReply',
+        method: 'post',
+        data: qs.stringify(data)
+    })
+}
+export const getComments = (data) => {
+    return axios({
+        url: '/my/getComments',
+        method: 'get'
+    })
+}

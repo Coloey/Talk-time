@@ -82,7 +82,6 @@ export default function MyEditor({ imageUploadConfig, socket }) {
             }
         )
         //message.success(res.data.message)
-
     }
     const handleLoad = () => {
         const rawContent = '{"blocks":[{"key":"1gs7c","text":"Hello, Draft.js!","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}';

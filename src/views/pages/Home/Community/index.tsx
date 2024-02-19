@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 //import PostContent from '../FocusPost/components/PostContent'
 import MyComment from '../FocusPost/components/Comment'
-import { getPosts } from '../../../../utils/api'
+import { getPosts, getCommentWithReplies } from '../../../../utils/api'
 import { message } from 'antd'
 import { updateLikes, updatePost } from '../../../../utils/api'
 import moment from 'moment'
@@ -13,14 +13,20 @@ export default function Community({ socket }) {
     const [content, setContent] = useState('')
     const [messageApi, contextHolder] = message.useMessage();
     const [post_id, setPostId] = useState()
+    const fromUser = localStorage.getItem('userName');
     const getPostsContent = async () => {
         const res = await getPosts();
         setPostItems(res.data.data);
         console.log(res.data.data, 'res')
     }
+    const getMyComment = async () => {
+        const res = await getCommentWithReplies({ fromUser })
+        console.log(res, 'getCommentWithReplies');
+    }
     useEffect(() => {
         getPostsContent()
-    }, [likes])
+        getMyComment()
+    }, [])
     useEffect(() => {
         socket.on('updateLikes', ({ likes, id }) => {
             // 属于宏任务
@@ -37,19 +43,6 @@ export default function Community({ socket }) {
             });
             //console.log(postItems, 'socket后的postItems')
         })
-        // socket.on('updatePost', ({ user_id, title, content, created_at }) => {
-        //     setPostItems(prevPostItems => {
-        //         console.log(prevPostItems, 'prevPostItems')
-        //         const updatedPostItems = prevPostItems.push({
-        //             post_id: prevPostItems[prevPostItems.length - 1].post_id + 1,
-        //             user_id,
-        //             title,
-        //             content,
-        //             created_at
-        //         })
-        //         return updatedPostItems;
-        //     });
-        // })
     }, [socket])
     const handleComment = (index: number) => {
         // console.log(index, 'index', showComment)
@@ -69,20 +62,20 @@ export default function Community({ socket }) {
             post_id: id,
             like_date: moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
         })
-        console.log(res.data.data.length, 'updateLikes likes');
-        const likes = res.data.data.length
-        //setPostItems(newPostItems)
-        // 更新post表中赞数。。。不同用户赞了需要更新?
-        res = await updatePost({
-            likes,
-            post_id: id,
-        })
-        setLikes(likes);
-        // 每个页面都需要更新
-        socket.emit('sendLikes', { likes, id })
+        //console.log(res, 'updateLikes likes');
+        if (res && res.data.status === 0) {
+            const likes = res.data.data.length;
+            res = await updatePost({
+                likes,
+                post_id: id,
+            })
+            setLikes(likes);
+            // 每个页面都需要更新
+            socket.emit('sendLikes', { likes, id });
+        }
     }
     useEffect(() => {
-        setShowComment(new Array(postItems.length).fill(false))
+        setShowComment(new Array(postItems.length).fill(true))
     }, [postItems.length])
     return (
         <>

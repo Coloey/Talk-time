@@ -33,7 +33,9 @@ const userRouter = require("./router/user");
 app.use("/api", userRouter);
 //导入并使用用户信息模块
 const userInfoRouter = require("./router/userInfo");
+const postRouter = require('./router/post');
 app.use("/my", userInfoRouter);
+app.use('/my', postRouter)
 //错误中间件
 app.use(function (err, req, res, next) {
   //数据验证失败
@@ -102,6 +104,7 @@ socketIO.on("connection", function (socket) {
     const {post_id} = obj
     socketIO.emit(`reply${post_id}`,obj)
   })
+  
   socket.on("disconnect", () => {
     console.log(`${socket.id}断开连接`);
     for(let [key,val] in Object.entries(onlineUsers)){

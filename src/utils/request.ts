@@ -19,7 +19,7 @@ const axios = ({
                             resolve(res)
                         })
                         setTimeout(() => {
-                            delete axiosQueue[key]
+                            delete axiosQueue[url]
                         }, config.cacheTime)
                     } else {
                         delete axiosQueue[url]
@@ -27,7 +27,7 @@ const axios = ({
                     return res
                 },
                 () => {
-                    delete axiosQueue[key]
+                    delete axiosQueue[url]
                 }
             )
         }
@@ -35,27 +35,29 @@ const axios = ({
             return res;
         })
     } else if (method == 'get') {
-        console.log(axiosQueue, 'axiosQueue')
+        // console.log(axiosQueue, 'axiosQueue')
         if (!axiosQueue[url]) {
-            axiosQueue[url] = instance.get<T, Promise<T>>(url, {
+            axiosQueue[url] = instance.get(url, {
                 params: data,
                 ...config
-            }).then((res) => {
-                if (config && config.cacheTime > 0) {
-                    axiosQueue[url] = new Promise((resolve) => {
-                        resolve(res)
-                    })
-                    setTimeout(() => {
+            }).then(
+                (res) => {
+                    if (config && config.cacheTime > 0) {
+                        axiosQueue[url] = new Promise((resolve) => {
+                            resolve(res)
+                        })
+                        setTimeout(() => {
+                            delete axiosQueue[url]
+                        }, config.cacheTime)
+                    } else {
                         delete axiosQueue[url]
-                    }, config.cacheTime)
-                } else {
-                    delete axiosQueue[url]
-                }
-                return res;
-            }),
+                    }
+                    return res
+                },
                 () => {
                     delete axiosQueue[url]
                 }
+            )
         }
         return (axiosQueue[url] as Promise<T>).then((res) => {
             return res;
