@@ -15,7 +15,6 @@ router.get('/getAllUsers', userInfo_handler.allUsers)
 router.post('/storeMessages', userInfo_handler.storeMessages)
 router.get('/getMessages', userInfo_handler.getMessages)
 router.post('/storeComment', userInfo_handler.storeComment)
-router.post('/storeReply', userInfo_handler.storeReply)
 router.get('/getCommentWithReplies', userInfo_handler.getCommentWithReplies)
 router.get('/getComments',userInfo_handler.getComments)
 module.exports=router

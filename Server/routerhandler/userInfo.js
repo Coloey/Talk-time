@@ -84,19 +84,6 @@ exports.storeComment = (req,res) => {
     res.send({status: 0 })
   })
 }
-exports.storeReply = (req,res) => {
-  const {comment_id,user_id, comment_text, fromUser, toUser, created_at} = req.body;
-  const sql = 'insert into replies(comment_id,usr_id,comment_text,fromUser,toUser,created_at) values (?,?,?,?,?,?)';
-  db.query(sql, [comment_id,user_id,comment_text, fromUser, toUser, created_at], (err,result) => {
-    if(err){
-      return res.cc(err)
-    }
-    if(result.affectedRows !== 1) {
-      return res.cc('回复失败')
-    }
-    res.send({status: 0})
-  })
-}
 exports.getCommentWithReplies = async(req,res) => {
   // fromUser作为reply中的toUser
   const {fromUser} = req.body;

@@ -6,9 +6,9 @@ export default function SingleComment({ comment, index, onLikesChange, onReplyAd
     const sendLikeComment = (index) => {
         onLikesChange(index)
     }
-    const sendAddReply = (index, val) => {
+    const sendAddReply = (index, val, id) => {
         //console.log(index, val)
-        onReplyAdd(index, val)
+        onReplyAdd(index, val, id)
     }
 
     return (

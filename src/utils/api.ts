@@ -96,16 +96,17 @@ export const getCommentWithReplies = (data) => {
         data: data
     })
 }
-export const storeReply = (data) => {
-    return axios({
-        url: '/my/storeReply',
-        method: 'post',
-        data: qs.stringify(data)
-    })
-}
+
 export const getComments = (data) => {
     return axios({
         url: '/my/getComments',
         method: 'get'
+    })
+}
+
+export const updatePostCommentCount = () => {
+    return axios({
+        url: '/my/updatePostCommentCount',
+        method: 'post'
     })
 }

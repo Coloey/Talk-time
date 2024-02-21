@@ -12,20 +12,20 @@ export default function Community({ socket }) {
     const [postItems, setPostItems] = useState([])
     const [content, setContent] = useState('')
     const [messageApi, contextHolder] = message.useMessage();
-    const [post_id, setPostId] = useState()
     const fromUser = localStorage.getItem('userName');
+    const [comments, setComments] = useState()
     const getPostsContent = async () => {
         const res = await getPosts();
         setPostItems(res.data.data);
         console.log(res.data.data, 'res')
     }
-    const getMyComment = async () => {
-        const res = await getCommentWithReplies({ fromUser })
-        console.log(res, 'getCommentWithReplies');
-    }
+    // const getMyComment = async () => {
+    //     const res = await getCommentWithReplies({ fromUser })
+    //     console.log(res, 'getCommentWithReplies');
+    // }
     useEffect(() => {
         getPostsContent()
-        getMyComment()
+        //getMyComment()
     }, [])
     useEffect(() => {
         socket.on('updateLikes', ({ likes, id }) => {
@@ -51,10 +51,10 @@ export default function Community({ socket }) {
         setShowComment(newShowComment)
         // console.log(showComment, 'newcomment')
     }
-    const handleCommentCount = (val, id) => {
-        //console.log(val)
-        setCommentCount(val)
-        setPostId(id)
+    const handleCommentCount = async (val) => {
+        if (val) {
+            getPostsContent()
+        }
     }
     const handleLikes = async (item, id) => {
         let res = await updateLikes({
@@ -109,7 +109,7 @@ export default function Community({ socket }) {
                                 <use xlinkHref="#icon-a-44tubiao-168"></use>
                             </svg>
                             {!showComment[index]
-                                ? (<span>{post_id === postItem.post_id ? commentCount + '条' : ''}评论</span>)
+                                ? (<span>{postItem.count + '条'}评论</span>)
                                 : (<span>收起评论</span>)
                             }
                         </button>

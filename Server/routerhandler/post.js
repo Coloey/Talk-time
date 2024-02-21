@@ -11,7 +11,7 @@ exports.storePost = (req, res) => {
     })
   }
   exports.getPosts = (req,res) => {
-    const sql = 'select * from posts';
+    let sql = 'select * from posts';
     db.query(sql, (err, result) => {
       if(err)return res.cc(err);
       console.log(result, 'getPosts')
@@ -27,6 +27,13 @@ exports.storePost = (req, res) => {
       if(result.affectedRows !== 1)return res.cc('点赞失败');
       console.log(result,'updatePost')
       res.send({status: 0, data: result})
+    })
+  }
+  exports.updatePostCommentCount = (req,res) => {
+    const sql = 'UPDATE posts SET count = (SELECT COUNT(*)FROM comments WHERE comments.post_id = posts.post_id)'
+    db.query(sql, (err,result) => {
+      if(err)return res.cc(err);
+      res.send({status: 0})
     })
   }
   exports.updateLikes = (req, res) => {
