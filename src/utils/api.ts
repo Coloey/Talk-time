@@ -110,3 +110,10 @@ export const updatePostCommentCount = () => {
         method: 'post'
     })
 }
+export const updateCommentLikes = (data) => {
+    return axios({
+        url: '/my/updateCommentLikes',
+        method: 'post',
+        data: qs.stringify(data)
+    })
+}

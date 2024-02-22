@@ -59,3 +59,21 @@ exports.storePost = (req, res) => {
       })
     })
   }
+  exports.updateCommentLikes = (req, res) =>{
+    const {user_id, comment_id,like_date} = req.body;
+    if(!user_id) {
+      return res.cc(err)
+    }
+    const sql = 'select * from comment_likes where user_id=? and comment_id=?'
+    db.query(sql, [user_id, comment_id, like_date],(err,result) => {
+      if(err)return res.cc(err)
+      if(result.affectedRows !== 1) {
+        return res.cc('点赞失败')
+      }
+      const sql = 'select * from comment_likes where comment_id=?'
+      db.query(sql,[comment_id],(err,result) => {
+        if(err)return res.cc(err)
+        res.send({status: 0, data: result})
+      })
+    })
+  } 

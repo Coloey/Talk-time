@@ -110,7 +110,8 @@ export default function MyComment({ show, onCommentsCount, socket, author, post_
         getMyComment()
     }, [])
     useEffect(() => {
-        if (comments.length > 0) {
+
+        if (comments.filter(comment => comment.post_id === post_id).length) {
             setHasBorder(true)
         } else {
             setHasBorder(false)

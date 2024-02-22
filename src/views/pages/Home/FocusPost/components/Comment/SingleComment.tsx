@@ -1,10 +1,20 @@
 import styled from 'styled-components'
 import './singleComment.styl'
 import { useState, useEffect } from 'react'
-export default function SingleComment({ comment, index, onLikesChange, onReplyAdd }) {
+import { updateCommentLikes } from '../../../../../../utils/api'
+export default function SingleComment({ comment, index, onReplyAdd }) {
     const [visible, setVisible] = useState(false)
-    const sendLikeComment = (index) => {
-        onLikesChange(index)
+    const handleLikeComment = async (comment_id) => {
+        //onLikesChange(index)
+        let res = await updateCommentLikes({
+            user_id: JSON.parse(localStorage.getItem('userInfo'))?.user_id,
+            comment_id,
+            like_date: moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
+        })
+        if (res && res.data.status === 0) {
+            const like = res.data.data.length;
+
+        }
     }
     const sendAddReply = (index, val, id) => {
         //console.log(index, val)
@@ -19,7 +29,7 @@ export default function SingleComment({ comment, index, onLikesChange, onReplyAd
                 <p>
                     {comment.comment_text}
                     <span>
-                        <button onClick={() => sendLikeComment(index)} className='btn'>
+                        <button onClick={() => handleLikeComment(comment_id) className='btn'>
                             <svg className="icon" aria-hidden="true">
                                 <use xlinkHref="#icon-a-44tubiao-208"></use>
                             </svg>
