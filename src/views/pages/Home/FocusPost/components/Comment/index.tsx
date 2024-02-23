@@ -110,14 +110,22 @@ export default function MyComment({ show, onCommentsCount, socket, author, post_
         getMyComment()
     }, [])
     useEffect(() => {
-
         if (comments.filter(comment => comment.post_id === post_id).length) {
             setHasBorder(true)
         } else {
             setHasBorder(false)
         }
     }, [comments.length])
-
+    const handleCommentLikes = (likes, comment_id) => {
+        setComments(preComments => {
+            const updatedComments = preComments.map(comment => {
+                if (comment.comment_id === comment_id) {
+                    comment.likes = likes;
+                }
+            })
+            return updatedComments;
+        })
+    }
     return (
         <div className={!show ? 'hidden' : ''}>
             <div className="commentIptDiv">
@@ -140,7 +148,8 @@ export default function MyComment({ show, onCommentsCount, socket, author, post_
                                         comment={comment}
                                         index={index}
                                         onReplyAdd={handleAddReply}
-
+                                        socket={socket}
+                                        handleCommentLikes={handleCommentLikes}
                                     ></SingleComment>
                                 }
                             </div>

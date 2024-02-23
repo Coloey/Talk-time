@@ -90,9 +90,14 @@ socketIO.on("connection", function (socket) {
     console.log(user_id,title,content,created_at,'obj')
     socketIO.emit('updatePost',{user_id,title,content,created_at});
   });
+  //帖子点赞
   socket.on('sendLikes', ({likes,id}) => {
     console.log(likes,'likes',id,'id')
     socketIO.emit('updateLikes', {likes, id})
+  })
+  //评论点赞
+  socket.on('sendCommentLikes', ({likes,comment_id}) => {
+    socketIO.emit('updateCommentLikes', {likes, comment_id})
   })
   socket.on('addComment',(obj) => {
     const {post_id} = obj

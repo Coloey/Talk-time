@@ -67,13 +67,30 @@ exports.storePost = (req, res) => {
     const sql = 'select * from comment_likes where user_id=? and comment_id=?'
     db.query(sql, [user_id, comment_id, like_date],(err,result) => {
       if(err)return res.cc(err)
-      if(result.affectedRows !== 1) {
-        return res.cc('点赞失败')
+      if(result.length > 0) {
+        return res.cc('已经点赞过!')
       }
-      const sql = 'select * from comment_likes where comment_id=?'
-      db.query(sql,[comment_id],(err,result) => {
+      const sql = 'insert into comment_likes(user_id,comment_id,like_date) values(?,?,?)'
+      db.query(sql,[user_id, comment_id, like_date],(err,result) => {
         if(err)return res.cc(err)
-        res.send({status: 0, data: result})
+        if(result.affectedRows !== 1)return res.cc('点赞失败')
+        //获取赞数
+        const sql = 'select * from comment_likes where comment_id=?'
+        db.query(sql,[comment_id],(err,result) => {
+          if(err)return res.cc(err)
+          res.send({status: 0, data: result})
+        })
       })
     })
-  } 
+  }
+  exports.updateComments = (req, res) => {
+    const {likes,comment_id} = req.body;
+    const sql = 'update comments set likes=? where comment_id=?'
+    db.query(sql, [likes,comment_id],(err,result) => {
+      if(err)return res.cc(err)
+      if(result.affectedRows !== 1)return res.cc('点赞失败');
+      console.log(result,'updateCommets')
+      res.send({status: 0})
+    })
+
+  }

@@ -117,3 +117,10 @@ export const updateCommentLikes = (data) => {
         data: qs.stringify(data)
     })
 }
+export const updateComments = (data) => {
+    return axios({
+        url: '/my/updateComments',
+        method: 'post',
+        data: qs.stringify(data)
+    })
+}

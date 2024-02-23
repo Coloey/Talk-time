@@ -1,9 +1,11 @@
 import styled from 'styled-components'
 import './singleComment.styl'
 import { useState, useEffect } from 'react'
-import { updateCommentLikes } from '../../../../../../utils/api'
-export default function SingleComment({ comment, index, onReplyAdd }) {
+import moment from 'moment'
+import { updateCommentLikes, updateComments } from '../../../../../../utils/api'
+export default function SingleComment({ comment, index, onReplyAdd, socket, handleCommentLikes }) {
     const [visible, setVisible] = useState(false)
+    const [likes, setLikes] = useState(comment.likes)
     const handleLikeComment = async (comment_id) => {
         //onLikesChange(index)
         let res = await updateCommentLikes({
@@ -11,11 +13,23 @@ export default function SingleComment({ comment, index, onReplyAdd }) {
             comment_id,
             like_date: moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
         })
+        console.log(res, 'comment like')
         if (res && res.data.status === 0) {
-            const like = res.data.data.length;
-
+            const likes = res.data.data.length;
+            setLikes(likes)
+            res = await updateComments({
+                likes,
+                comment_id
+            })
+            console.log(res, 'updateComments')
+            socket.emit('sendCommentLikes', { likes, comment_id })
         }
     }
+    useEffect(() => {
+        socket.on('updateCommentLikes', ({ likes, comment_id }) => {
+            handleCommentLikes(likes, comment_id)
+        })
+    }, [socket])
     const sendAddReply = (index, val, id) => {
         //console.log(index, val)
         onReplyAdd(index, val, id)
@@ -29,11 +43,11 @@ export default function SingleComment({ comment, index, onReplyAdd }) {
                 <p>
                     {comment.comment_text}
                     <span>
-                        <button onClick={() => handleLikeComment(comment_id) className='btn'>
+                        <button onClick={() => handleLikeComment(comment.comment_id)} className='btn'>
                             <svg className="icon" aria-hidden="true">
                                 <use xlinkHref="#icon-a-44tubiao-208"></use>
                             </svg>
-                            {comment.likes}
+                            {likes}
                         </button>
                     </span>
                     <button onClick={() => setVisible(!visible)} className='btn'>

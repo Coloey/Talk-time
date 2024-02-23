@@ -9,4 +9,5 @@ router.post('/updatePost', post_handler.updatePost)
 router.post('/updateLikes', post_handler.updateLikes)
 router.post('/updatePostCommentCount', post_handler.updatePostCommentCount)
 router.post('/updateCommentLikes',post_handler.updateCommentLikes)
+router.post('/updateComments', post_handler.updateComments)
 module.exports=router
