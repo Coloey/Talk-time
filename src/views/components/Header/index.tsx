@@ -49,15 +49,6 @@ export default function Header({ isAuthenticated }) {
                         }>
                         发布
                     </NavLink>
-                    <NavLink to={RouteIndex.MESSAGE}
-                        className={
-                            ({ isActive }) =>
-                                isActive
-                                    ? 'tab tab-active'
-                                    : 'tab'
-                        }>
-                        消息
-                    </NavLink>
                     <NavLink to={RouteIndex.PRIVATE_MESSAGE}
                         className={
                             ({ isActive }) =>
@@ -68,6 +59,15 @@ export default function Header({ isAuthenticated }) {
                         私信
                     </NavLink>
                     <div className={messageCount === 0 ? '' : 'messageCount'}>{messageCount >= 100 ? '99+' : (messageCount !== 0 ? messageCount : '')}</div>
+                    <NavLink to={RouteIndex.MySelf}
+                        className={
+                            ({ isActive }) =>
+                                isActive
+                                    ? 'tab tab-active'
+                                    : 'tab'
+                        }>
+                        我的
+                    </NavLink>
                     <Search className='search'></Search>
                     <button className='btn' onClick={logout}>退出</button>
                 </div>

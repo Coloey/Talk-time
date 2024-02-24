@@ -4,7 +4,7 @@ import './polyfill'
 import Header from './views/components/Header/index';
 import Home from './views/pages/Home/index';
 import Post from './views/pages/Post/index';
-import Message from './views/pages/Message/index';
+import User from './views/pages/User/index';
 import PrivateMessage from './views/pages/Private_Message/ChatPage';
 import FocusPost from './views/pages/Home/FocusPost/index';
 import Community from './views/pages/Home/Community/index';
@@ -47,8 +47,8 @@ const router = createBrowserRouter([
         element: <Post socket={socket} />
       },
       {
-        path: RouteIndex.MESSAGE,
-        element: <Message />,
+        path: RouteIndex.MySelf,
+        element: <User />,
       },
       {
         path: RouteIndex.PRIVATE_MESSAGE,

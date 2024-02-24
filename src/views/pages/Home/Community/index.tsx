@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 //import PostContent from '../FocusPost/components/PostContent'
 import MyComment from '../FocusPost/components/Comment'
-import { getPosts, getCommentWithReplies } from '../../../../utils/api'
+import { getPosts, getComments } from '../../../../utils/api'
 import { message } from 'antd'
 import { updateLikes, updatePost } from '../../../../utils/api'
 import moment from 'moment'
@@ -13,16 +13,23 @@ export default function Community({ socket }) {
     const [content, setContent] = useState('')
     const [messageApi, contextHolder] = message.useMessage();
     const fromUser = localStorage.getItem('userName');
-    const [comments, setComments] = useState()
+    //const [comments, setComments] = useState([])
     const getPostsContent = async () => {
         const res = await getPosts();
         setPostItems(res.data.data);
         console.log(res.data.data, 'res')
     }
     // const getMyComment = async () => {
-    //     const res = await getCommentWithReplies({ fromUser })
-    //     console.log(res, 'getCommentWithReplies');
+    //     const res = await getComments()
+    //     if (res && res.data.status === 0) {
+    //         setComments((preComments) => {
+    //             const updatedComments = res.data.data;
+    //             console.log(updatedComments)
+    //             return updatedComments;
+    //         })
+    //     }
     // }
+
     useEffect(() => {
         getPostsContent()
         //getMyComment()

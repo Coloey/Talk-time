@@ -102,7 +102,7 @@ export default function MyComment({ show, onCommentsCount, socket, author, post_
             if (res && res.data.status === 0) {
                 setComments((preComments) => {
                     const updatedComments = res.data.data;
-                    console.log(updatedComments)
+                    //console.log(updatedComments)
                     return updatedComments;
                 })
             }
@@ -117,11 +117,14 @@ export default function MyComment({ show, onCommentsCount, socket, author, post_
         }
     }, [comments.length])
     const handleCommentLikes = (likes, comment_id) => {
+        //console.log(comment_id, likes, post_id)
         setComments(preComments => {
+            //console.log(preComments, 'preComments')
             const updatedComments = preComments.map(comment => {
                 if (comment.comment_id === comment_id) {
                     comment.likes = likes;
                 }
+                return comment;
             })
             return updatedComments;
         })

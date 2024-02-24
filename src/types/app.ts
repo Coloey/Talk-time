@@ -11,4 +11,5 @@ export enum RouteIndex {
     MESSAGE = '/commnity_message',
     PRIVATE_MESSAGE = '/private_message',
     FOCUS_POST = '/focusPost',
+    MySelf = '/myself'
 }

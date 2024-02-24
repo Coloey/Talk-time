@@ -3,9 +3,11 @@ import './singleComment.styl'
 import { useState, useEffect } from 'react'
 import moment from 'moment'
 import { updateCommentLikes, updateComments } from '../../../../../../utils/api'
-export default function SingleComment({ comment, index, onReplyAdd, socket, handleCommentLikes }) {
+export default function SingleComment({ comment, index, onReplyAdd, socket, handleCommentLikes
+}) {
     const [visible, setVisible] = useState(false)
-    const [likes, setLikes] = useState(comment.likes)
+    //console.log(comment.likes)
+    //const [likes, setLikes] = useState(comment.likes)
     const handleLikeComment = async (comment_id) => {
         //onLikesChange(index)
         let res = await updateCommentLikes({
@@ -16,7 +18,8 @@ export default function SingleComment({ comment, index, onReplyAdd, socket, hand
         console.log(res, 'comment like')
         if (res && res.data.status === 0) {
             const likes = res.data.data.length;
-            setLikes(likes)
+            handleCommentLikes(likes, comment_id)
+            //setLikes(likes)
             res = await updateComments({
                 likes,
                 comment_id
@@ -47,7 +50,7 @@ export default function SingleComment({ comment, index, onReplyAdd, socket, hand
                             <svg className="icon" aria-hidden="true">
                                 <use xlinkHref="#icon-a-44tubiao-208"></use>
                             </svg>
-                            {likes}
+                            {comment.likes}
                         </button>
                     </span>
                     <button onClick={() => setVisible(!visible)} className='btn'>

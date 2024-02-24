@@ -21,14 +21,6 @@ export default function Home() {
                             }>
                             社区
                         </NavLink>
-                        <NavLink to={RouteIndex.FOCUS_POST}
-                            className={
-                                ({ isActive }) =>
-                                    isActive
-                                        ? 'tab tab-active'
-                                        : 'tab'}
-                        >
-                            关注</NavLink>
                     </div>
                     <Outlet />
                 </div>
