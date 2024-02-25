@@ -62,14 +62,14 @@ instance.interceptors.response.use(
           if (res.data.token !== undefined)
             window.localStorage.setItem("token", res.data.token);
         },
-        200: function (res) {
-          //获取用户信息成功后存储在localStorage里和store
-          // store.commit("saveUserInfo", res.data.data);
-          window.localStorage.setItem(
-            "userInfo",
-            JSON.stringify(res.data.data)
-          );
-        },
+        // 200: function (res) {
+        //   //获取用户信息成功后存储在localStorage里和store
+        //   // store.commit("saveUserInfo", res.data.data);
+        //   window.localStorage.setItem(
+        //     "userInfo",
+        //     JSON.stringify(res.data.data)
+        //   );
+        // },
         201: function () {
           //退出登录清空token,跳转登录页面
           window.localStorage.removeItem("token");

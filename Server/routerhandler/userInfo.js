@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const emojiRegex = require('emoji-regex');
 const regex = emojiRegex()
 exports.userInfo = (req, res) => {
-  const sql = "select name,avatar, user_id from users where name=?";
+  const sql = "select name,avatar, user_id, area, job from users where name=?";
   db.query(sql, [req.user.name], (err, result) => {
     if (err) return res.cc(err);
     if (result.length !== 1) return res.rcc("获取用户信息失败");
@@ -11,7 +11,7 @@ exports.userInfo = (req, res) => {
   });
 };
 exports.allUsers = (req, res) => {
-  const sql = "select * from users";
+  const sql = "select name from users";
   db.query(sql, [], (err, result) => {
     if (err) return res.cc(err);
     console.log(result);
@@ -22,11 +22,13 @@ exports.updateUserInfo = (req, res) => {
   const userInfo = req.body;
   const sql = "update users set ? where name=?";
   db.query(sql, [userInfo, userInfo.name], (err, result) => {
-    if (err) return res.cc(err);
+
+    //if (err) return res.cc(err);
     if (result.affectedRows !== 1) return res.cc("更新用户信息失败");
     res.send({ status: 0, message: "更新用户信息成功", data: result[0] });
   });
 };
+
 exports.updatePassword = (req, res) => {
   //const userInfo=req.body
   //根据id查询用户是否存在
@@ -84,6 +86,7 @@ exports.storeComment = (req,res) => {
     res.send({status: 0 })
   })
 }
+
 exports.getCommentWithReplies = async(req,res) => {
   // fromUser作为reply中的toUser
   const {fromUser} = req.body;
@@ -118,6 +121,7 @@ exports.getCommentWithReplies = async(req,res) => {
     res.cc(error)
   }
 }
+
 exports.getComments = (req,res) => {
   const sql='select * from comments';
   db.query(sql,(err,result) => {
