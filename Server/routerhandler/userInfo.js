@@ -36,7 +36,7 @@ exports.updatePassword = (req, res) => {
   db.query(sql, req.user.name, (err, result) => {
     if (err) return res.cc(err);
     //检查指定id的用户是否存在
-    if (result.length !== 1) return res.cc("用户不存在,请注册账号");
+    if (result.length !== 1) return res.send({status: 401, message: "用户不存在,请注册账号"});
     //判断提交的旧密码是否正确
     if (!bcrypt.compareSync(req.body.oldPassword, result[0].password)) {
       return res.cc("旧密码错误");

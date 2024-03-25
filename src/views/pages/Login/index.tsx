@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { RouteIndex } from '../../../types/app';
 import { UserOutlined, EyeInvisibleOutlined, EyeTwoTone, LockOutlined } from '@ant-design/icons'
 import { Input } from 'antd';
+import { message } from 'antd';
 import { login, getUserInfo, register } from '../../../utils/api';
 import './index.styl'
 const Login = ({ socket }) => {
@@ -10,23 +11,36 @@ const Login = ({ socket }) => {
     const [userName, setUserName] = useState('');
     const [password, setPassWord] = useState('')
     const [title, setTitle] = useState('登录账号')
+    const handleLogin = async () => {
+        const loginRes = await login({ name: userName, password: password });
+        if (loginRes && loginRes.data.status === 0) {
+            navigate(RouteIndex.HOME);
+            await handleUserInfo();
+        } else {
+            throw new Error('Login failed');
+        }
+    }
+    const handleUserInfo = async () => {
+        const userInfoRes = await getUserInfo();
+        console.log(JSON.stringify(userInfoRes.data.data), 'userInfo');
+        localStorage.setItem('userName', userName);
+        localStorage.setItem('userInfo', JSON.stringify(userInfoRes.data.data));
+        socket.emit("addUser", { username: localStorage.getItem('userName'), socketID: socket.id });
+        navigate(RouteIndex.HOME);
+    }
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await login({ name: userName, password: password })
+            await handleLogin();
         } catch (e) {
-            setTitle('注册账号')
-            let res = await register({ name: userName, password: password })
-            //console.log(res)
+            console.log(e, 'error');
+            setTitle('注册账号');
+            const registerRes = await register({ name: userName, password: password });
+            if (registerRes.data.status === 200) {
+                await handleUserInfo();
+            }
         }
-        navigate(RouteIndex.HOME)
-        const res = await getUserInfo()
-        console.log(JSON.stringify(res.data.data), 'userInfo')
-        console.log(res, 'userInfo')
-        localStorage.setItem('userName', userName);
-        localStorage.setItem('userInfo', JSON.stringify(res.data.data))
-        socket.emit("addUser", { username: localStorage.getItem('userName'), socketID: socket.id });
-        navigate(RouteIndex.HOME)
+
     };
     const [passwordVisible, setPasswordVisible] = useState(false);
     return (

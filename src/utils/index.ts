@@ -2,7 +2,7 @@ import axios from "axios";
 import { message } from 'antd'
 import { RouteIndex } from "../types/app";
 import { redirect } from "react-router-dom";
-import { message } from 'antd';
+//import { message } from 'antd';
 import Loading from "../views/components/Loading/index";
 //创建一个axios实例
 const instance = axios.create({
@@ -54,7 +54,8 @@ instance.interceptors.response.use(
     //hideLoading();
     //响应成功
     const status = response.data.status;
-    if (status != 1) {
+    console.log(status, 'login status')
+    if (status !== 1) {
       //策略模式
       let stragtegy = {
         0: function (res) {
