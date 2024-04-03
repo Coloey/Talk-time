@@ -30,7 +30,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: RouteIndex.HOME,
-        element: <Home />,
+        element: <Home socket={socket} />,
         children: [
           {
             path: RouteIndex.FOCUS_POST,

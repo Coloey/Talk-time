@@ -22,7 +22,7 @@ const Login = ({ socket }) => {
     }
     const handleUserInfo = async () => {
         const userInfoRes = await getUserInfo();
-        console.log(JSON.stringify(userInfoRes.data.data), 'userInfo');
+        //console.log(JSON.stringify(userInfoRes.data.data), 'userInfo');
         localStorage.setItem('userName', userName);
         localStorage.setItem('userInfo', JSON.stringify(userInfoRes.data.data));
         socket.emit("addUser", { username: localStorage.getItem('userName'), socketID: socket.id });

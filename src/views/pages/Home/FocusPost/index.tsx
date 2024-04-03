@@ -1,7 +1,7 @@
 import PostContent from "./components/PostContent/index"
-export default function FocusPost({socket}) {
+export default function FocusPost({ socket }) {
     return (
-        <div className=''>
+        <div>
             <PostContent socket={socket}></PostContent>
         </div>
     )

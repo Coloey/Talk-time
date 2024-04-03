@@ -1,32 +1,15 @@
 import React, { useEffect } from 'react'
 import { RouteIndex } from '../../../types/app'
+import Community from './Community/index'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import './index.styl'
-export default function Home() {
-    const navigate = useNavigate()
-    useEffect(() => {
-        navigate(RouteIndex.COMMUNITY)
-    }, [])
+export default function Home({ socket }) {
     return (
         <div className="page">
             <div className="container">
                 <div className="left">
-                    <div className="tabs">
-                        <NavLink to={RouteIndex.COMMUNITY}
-                            className={
-                                ({ isActive }) =>
-                                    isActive
-                                        ? 'tab tab-active'
-                                        : 'tab'
-                            }>
-                            社区
-                        </NavLink>
-                    </div>
-                    <Outlet />
+                    <Community socket={socket}></Community>
                 </div>
-                {/* <div className="right">
-
-                </div> */}
             </div>
         </div>
     )

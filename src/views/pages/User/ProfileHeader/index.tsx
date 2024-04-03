@@ -1,38 +1,40 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { message } from 'antd'
-import { updateUserInfo } from '../../../../utils/api'
+import getBase64 from '../../../../utils/getBase64'
+import { updateUserInfo, getUserInfo } from '../../../../utils/api'
 import './index.styl'
+type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
+
 export default function ProfileHeader({ backgroundImage }) {
-    // const fileInputRef = useRef<HTMLInputElement>(null);
-    const [avatarImage, setAvatarImage] = useState('')
+    const [avatarImage, setAvatarImage] = useState('https://tse1-mm.cn.bing.net/th/id/OIP-C.qebt1PBL2zYXGXsHVMPTXAAAAA?rs=1&pid=ImgDetMain')
     const [isHovering, setIsHovering] = useState(false)
     const [editMode, setEditMode] = useState(false)
     const [userInfo, setUserInfo] = useState({})
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
-        const reader = new FileReader();
-        reader.onload = () => {
-            if (typeof reader.result === 'string') {
-                setAvatarImage(reader.result)
-                setUserInfo((preUserInfo) => ({
-                    ...preUserInfo,
-                    avatar: reader.result
-                }))
-            }
-        }
-        // console.log(file, 'file')
-        if (file) {
-            reader.readAsDataURL(file);
-        }
+        getBase64(file)
+            .then(async (url) => {
+                setAvatarImage(url)
+                localStorage.setItem('avatar', JSON.stringify(url))
+                const res = await updateUserInfo({
+                    avatar: JSON.stringify(url),
+                    name: userInfo.name
+                })
+
+            }).catch(err => {
+                console.error(err)
+            })
     }
     const editProfile = () => {
         setEditMode(!editMode)
     }
     const saveProfile = async () => {
+        console.log(userInfo, 'userInfo2')
+        localStorage.setItem('userInfo', JSON.stringify(userInfo));
         const res = await updateUserInfo({
             ...userInfo
         })
-        console.log(res, 'profile')
+        res.data.status === 0 && setEditMode(false)
     }
     const handleUserInfo = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -42,14 +44,10 @@ export default function ProfileHeader({ backgroundImage }) {
         }))
     }
     useEffect(() => {
-        const myUserInfo = localStorage.getItem('userInfo')
+        const myUserInfo = JSON.parse(localStorage.getItem('userInfo'))
         if (myUserInfo) {
-            setUserInfo(JSON.parse(myUserInfo))
-            setAvatarImage(userInfo?.avatar)
-            setUserInfo((preUserInfo) => ({
-                ...preUserInfo,
-                backgroundImage
-            }))
+            setUserInfo(myUserInfo)
+            setAvatarImage(myUserInfo?.avatar || JSON.parse(localStorage.getItem('avatar')))
         } else {
             message.error('请重新登录')
         }
@@ -79,7 +77,7 @@ export default function ProfileHeader({ backgroundImage }) {
                 </div>
             </div>
             <div className="body">
-                <h3 className='name'>{userInfo.name}</h3>
+                <h3 className='name'>{userInfo.name || localStorage.getItem('userName')}</h3>
                 <div className="item">
                     <span className='item-title'>居住地</span>
                     {editMode

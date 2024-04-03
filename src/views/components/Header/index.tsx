@@ -29,9 +29,6 @@ export default function Header({ isAuthenticated }) {
     return (
         <>
             <header>
-                <div className="icon">
-                    <Link to={RouteIndex.HOME}>icon</Link>
-                </div>
                 <div className="tabs">
                     <NavLink to={RouteIndex.HOME}
                         className={
@@ -68,7 +65,6 @@ export default function Header({ isAuthenticated }) {
                         }>
                         我的
                     </NavLink>
-                    <Search className='search'></Search>
                     <button className='btn' onClick={logout}>退出</button>
                 </div>
             </header>

@@ -29,18 +29,20 @@ export const getUserInfo = () => {
         method: 'get',
     })
 }
-export const updateUserInfo = (data) => {
+export const updateUserInfo = (data, config) => {
     return axios({
         url: '/my/updateUserInfo',
         method: 'post',
-        data: qs.stringify(data)
+        data: qs.stringify(data),
+        config
     })
 }
-export const updatePassword = (data) => {
+export const updatePassword = (data, config) => {
     return axios({
         url: '/my/updatePassword',
         method: 'post',
-        data: qs.stringify(data)
+        data: data,
+        config,
     })
 }
 export const getAllUsers = () => {

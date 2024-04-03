@@ -13,22 +13,11 @@ export default function Community({ socket }) {
     const [content, setContent] = useState('')
     const [messageApi, contextHolder] = message.useMessage();
     const fromUser = localStorage.getItem('userName');
-    //const [comments, setComments] = useState([])
     const getPostsContent = async () => {
         const res = await getPosts();
         setPostItems(res.data.data);
-        console.log(res.data.data, 'res')
+        // console.log(res.data.data, 'res')
     }
-    // const getMyComment = async () => {
-    //     const res = await getComments()
-    //     if (res && res.data.status === 0) {
-    //         setComments((preComments) => {
-    //             const updatedComments = res.data.data;
-    //             console.log(updatedComments)
-    //             return updatedComments;
-    //         })
-    //     }
-    // }
 
     useEffect(() => {
         getPostsContent()
@@ -92,11 +81,11 @@ export default function Community({ socket }) {
                     key={postItem.post_id}
                 >
                     <div className="authorInfo">
-                        <span className="avatar"></span>
+                        <span className="avatar">
+                        </span>
                         <div className="authorInfo-content">
                             <span className="authorInfo-head">{postItem.name}</span>
-                            {/* 转成正常时间 */}
-                            <span className="authorInfo-detail">{postItem.created_at}</span>
+                            <span className="authorInfo-detail">{new Date(postItem.created_at).toLocaleString()}</span>
                         </div>
                     </div>
                     <h2 className="title" dangerouslySetInnerHTML={{ __html: postItem.title }}></h2>

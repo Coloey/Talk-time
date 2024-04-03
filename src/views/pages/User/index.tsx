@@ -1,21 +1,32 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ProfileHeader from './ProfileHeader/index'
+import { updateUserInfo } from '../../../utils/api'
+import getBase64 from '../../../utils/getBase64'
 import './index.styl'
 export default function User() {
     const [backgroundImage, setBackgroundImage] = useState('https://ts1.cn.mm.bing.net/th/id/R-C.503d978a89292089a60f555b093bdeeb?rik=JlV8Z9qWjt0wWQ&riu=http%3a%2f%2fwww.mobanjing.com%2fdown%2fjpg%2f53f98ad8fa4054aa9e9be8a27d605d89.jpg&ehk=Pe8NnV4AKIMzXxuJ4ASOICyZxa2bYRJpxJVYbSQEx8I%3d&risl=&pid=ImgRaw&r=0')
-    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
-        const reader = new FileReader();
-        reader.onload = () => {
-            if (typeof reader.result === 'string') {
-                setBackgroundImage(reader.result);
-            }
-        };
-
-        if (file) {
-            reader.readAsDataURL(file);
-        }
+        getBase64(file)
+            .then(async (url) => {
+                setBackgroundImage(url);
+                localStorage.setItem('backgroundImage', JSON.stringify(url))
+                const res = await updateUserInfo({
+                    avatar: JSON.stringify(url),
+                    name: localStorage.getItem('userName')
+                })
+            }).catch(err => {
+                console.error(err)
+            })
     }
+    useEffect(() => {
+        const myUserInfo = JSON.parse(localStorage.getItem('userInfo'))
+        if (myUserInfo) {
+            setBackgroundImage(myUserInfo?.backgroundImage || JSON.parse(localStorage.getItem('backgroundImage')))
+        } else {
+            message.error('请重新登录')
+        }
+    }, [])
     return (
         <div className="main">
             <div className="Card">
@@ -35,7 +46,6 @@ export default function User() {
                 </div>
                 <ProfileHeader backgroundImage={backgroundImage}></ProfileHeader>
             </div>
-            {/* <ProfileMain></ProfileMain> */}
         </div>
     )
 }

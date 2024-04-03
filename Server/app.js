@@ -1,11 +1,15 @@
 //const store=require("../src/store")
 const express = require("express");
 const cors = require("cors");
+const bodyParser = require('body-parser')
 const app = express();
 const Joi = require("joi");
 app.use(cors());
 //解析application/x-www-form-urlencoded数据
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({
+  extended: false
+}));
+app.use(bodyParser.json())
 //在路由之前封装res.cc函数,中间件处理函数处理响应
 app.use((req, res, next) => {
   res.cc = function (resData, status = 1) {
@@ -25,7 +29,9 @@ app.use(
   expressJWT({
     secret: config.jwtSecrectKey,
     algorithms: ["HS256"],
-  }).unless({ path: [/^\/api\//] })
+  }).unless({
+    path: [/^\/api\//]
+  })
 );
 
 //导入用户路由模块
@@ -41,18 +47,25 @@ app.use(function (err, req, res, next) {
   //数据验证失败
   if (err instanceof Joi.ValidationError) return res.cc(err);
   if (err.name === "UnauthorizedError")
-    return res.send({ status: 1, message: "登录已过期，请重新登录" });
+    return res.send({
+      status: 1,
+      message: "登录已过期，请重新登录"
+    });
   //未知错误
   res.cc(err);
 });
-const { createServer } = require("http");
+const {
+  createServer
+} = require("http");
 //const { on } = require("events");
 const server = createServer(app);
-const { Server } = require("socket.io");
+const {
+  Server
+} = require("socket.io");
 const socketIO = new Server(server, {
-    cors: {
-        origin: "http://127.0.0.1:5173",
-    }
+  cors: {
+    origin: "http://localhost:5173",
+  }
 });
 let onlineUsers = {} //存储在线用户的对象
 //let onlineCount = 0;
@@ -63,7 +76,10 @@ socketIO.on("connection", function (socket) {
   let toUser = "";
   let fromUser = "";
   let date = "";
-  socket.on("addUser", function ({username,socketID}) {
+  socket.on("addUser", function ({
+    username,
+    socketID
+  }) {
     // eslint-disable-next-line no-prototype-builtins
     if (!onlineUsers[username]) {
       //onlineCount += 1;
@@ -74,7 +90,7 @@ socketIO.on("connection", function (socket) {
     console.log("onlineCount", Object.keys(onlineUsers).length);
   });
   socket.on("message", (obj) => {
-    console.log('message',obj);
+    console.log('message', obj);
     (toUser = obj.toUser), (fromUser = obj.fromUser);
     date = obj.date;
     if (Object.keys(onlineUsers).includes(toUser)) {
@@ -86,40 +102,66 @@ socketIO.on("connection", function (socket) {
       console.log(toUser + "不在线");
     }
   });
-  socket.on("sendPost", ({user_id,title,content,created_at}) => {
-    console.log(user_id,title,content,created_at,'obj')
-    socketIO.emit('updatePost',{user_id,title,content,created_at});
+  socket.on("sendPost", ({
+    user_id,
+    title,
+    content,
+    created_at
+  }) => {
+    console.log(user_id, title, content, created_at, 'obj')
+    socketIO.emit('updatePost', {
+      user_id,
+      title,
+      content,
+      created_at
+    });
   });
   //帖子点赞
-  socket.on('sendLikes', ({likes,id}) => {
-    console.log(likes,'likes',id,'id')
-    socketIO.emit('updateLikes', {likes, id})
+  socket.on('sendLikes', ({
+    likes,
+    id
+  }) => {
+    console.log(likes, 'likes', id, 'id')
+    socketIO.emit('updateLikes', {
+      likes,
+      id
+    })
   })
   //评论点赞
-  socket.on('sendCommentLikes', ({likes,comment_id}) => {
-    socketIO.emit('updateCommentLikes', {likes, comment_id})
+  socket.on('sendCommentLikes', ({
+    likes,
+    comment_id
+  }) => {
+    socketIO.emit('updateCommentLikes', {
+      likes,
+      comment_id
+    })
   })
-  socket.on('addComment',(obj) => {
-    const {post_id} = obj
+  socket.on('addComment', (obj) => {
+    const {
+      post_id
+    } = obj
     socketIO.emit(`${post_id}`, obj)
     console.log(obj, 'updateComment')
   })
   socket.on('addReply', (obj) => {
     console.log(obj, 'addReply')
-    const {post_id} = obj
-    socketIO.emit(`reply${post_id}`,obj)
+    const {
+      post_id
+    } = obj
+    socketIO.emit(`reply${post_id}`, obj)
   })
-  
+
   socket.on("disconnect", () => {
     console.log(`${socket.id}断开连接`);
-    for(let [key,val] in Object.entries(onlineUsers)){
-      if(val === socket.id){
+    for (let [key, val] in Object.entries(onlineUsers)) {
+      if (val === socket.id) {
         delete onlineUsers[key]
       }
-    }   
-        // 发送用户列表到客户端
-        socketIO.emit('newUserResponse', Array.from(onlineUsers));
-        socket.disconnect();
+    }
+    // 发送用户列表到客户端
+    socketIO.emit('newUserResponse', Array.from(onlineUsers));
+    socket.disconnect();
     // delete onlineUsers[fromUser];
   });
 });

@@ -6,7 +6,6 @@ import { stateToHTML } from 'draft-js-export-html';
 import InlineTypesControl from './InlineTypesControl/index';
 import BlockTypesControl from './BlockTypeControl/index';
 import FontSizeControl from './FontSizeControl/index';
-import ImageControl from './ImageControl/index';
 import { storePostContent } from '../../../utils/api';
 import { useNavigate } from 'react-router-dom';
 import { RouteIndex } from '../../../types/app';
@@ -38,12 +37,7 @@ export default function MyEditor({ imageUploadConfig, socket }) {
         }
         return 'not-handled'
     }
-    // const onInlineTypeChange = (style) => {
-    //     handleEditorChange(RichUtils.toggleInlineStyle(editorState, style))
-    // }
-    // const handleBlockType = (blockType) => {
-    //     handleEditorChange(RichUtils.toggleBlockType(editorState, blockType))
-    // }
+
     const handleSave = async () => {
         const contentState = editorState.getCurrentContent()
         let content = stateToHTML(contentState)
@@ -81,10 +75,9 @@ export default function MyEditor({ imageUploadConfig, socket }) {
                 created_at: moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
             }
         )
-        //message.success(res.data.message)
     }
     const handleLoad = () => {
-        const rawContent = '{"blocks":[{"key":"1gs7c","text":"Hello, Draft.js!","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}';
+        const rawContent = '{"blocks":[{"key":"1gs7c","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}';
         const contentState = convertFromRaw(JSON.parse(rawContent))
         handleEditorChange(EditorState.createWithContent(contentState))
     }
@@ -94,7 +87,7 @@ export default function MyEditor({ imageUploadConfig, socket }) {
     }
     return (
         <>
-            <div style={{ border: '1px solid #fff', minHeight: '200px', lineHeight: 1.5, width: '60vw', marginLeft: '20vw', marginTop: '80px' }}>
+            <div style={{ border: '1px solid #fff', minHeight: '200px', lineHeight: 1.5, width: '60vw', marginLeft: '20vw' }}>
                 <div
                     style={{
                         padding: '0 15px',
@@ -109,12 +102,6 @@ export default function MyEditor({ imageUploadConfig, socket }) {
                     <BlockTypesControl
                         editorState={editorState}
                         onBlockTypeChange={handleEditorChange}
-                    />
-
-                    <ImageControl
-                        editorState={editorState}
-                        onAddImage={handleEditorChange}
-                        imageUploadConfig={imageUploadConfig}
                     />
                 </div>
                 <div

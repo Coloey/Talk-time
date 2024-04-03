@@ -25,22 +25,12 @@ const ChatPage = ({ socket }) => {
         getUsers()
         const getMessage = async () => {
             const res = await getMessages()
-            console.log(res.data.data, 'getMessage')
+            //console.log(res.data.data, 'getMessage')
             setMessages(res.data.data)
             //dispatch({ type: 'initValue', [messages.filter(item => item.readStaus === false).length]})
         }
         getMessage()
     }, [socket])
-    // useEffect(() => {
-    //     // let len;
-    //     // for (let i = 0; i < messages.length; i++) {
-    //     //     if (messages[i].readStatus === 0) {
-    //     //         len++;
-    //     //     }
-    //     // }
-    //     // dispatch({ type: 'initValue', payload: len })
-    //     // console.log(messages)
-    // }, [messages])
     useEffect(() => {
         socket.on(localStorage.getItem('userName'), (data) => setMessages([...messages, data]));
     }, [socket, messages]);
