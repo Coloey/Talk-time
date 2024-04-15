@@ -13,3 +13,16 @@ export enum RouteIndex {
     FOCUS_POST = '/focusPost',
     MySelf = '/myself'
 }
+export interface PostItems {
+    post_id?: number,
+    user_id?: number,
+    title: string,
+    content: string,
+    created_at: Date,
+    updated_at?: Date,
+    name: string,
+    likes: number,
+    commentCount: number
+    haveLiked: number
+    count?: number
+}

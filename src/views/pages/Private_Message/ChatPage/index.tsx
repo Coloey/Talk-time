@@ -20,13 +20,13 @@ const ChatPage = ({ socket }) => {
         const getUsers = async () => {
             const res = await getAllUsers();
             console.log(res, 'users')
-            setUsers(res.data.data)
+            res.data.data && setUsers(res.data.data)
         }
         getUsers()
         const getMessage = async () => {
             const res = await getMessages()
             //console.log(res.data.data, 'getMessage')
-            setMessages(res.data.data)
+            res.data.data && setMessages(res.data.data)
             //dispatch({ type: 'initValue', [messages.filter(item => item.readStaus === false).length]})
         }
         getMessage()

@@ -16,7 +16,8 @@ import { store } from './app/store';
 import './index.css'
 import socketIO from 'socket.io-client';
 import { Provider } from 'react-redux';
-const socket = socketIO.connect('http://127.0.0.1:4000')
+const socket = socketIO.connect('http://120.26.132.172:5000')
+// const socket = socketIO.connect('http://127.0.0.1:5000')
 // import { io } from "socket.io-client";
 // const socket = io("http://127.0.0.1:4000");
 socket.on('open', () => {

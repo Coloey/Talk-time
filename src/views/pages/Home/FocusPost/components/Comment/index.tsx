@@ -1,6 +1,4 @@
 import './style.styl'
-import { Comment, Avatar } from 'antd'
-import Icon from '@ant-design/icons';
 import { useState, useEffect } from 'react'
 import moment from 'moment'
 import SingleComment from './SingleComment';

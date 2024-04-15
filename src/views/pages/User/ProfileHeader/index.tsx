@@ -97,6 +97,7 @@ export default function ProfileHeader({ backgroundImage }) {
                             placeholder='Enter your job'
                             name='job'
                             className='inputText'
+                            value={userInfo.job}
                             onChange={handleUserInfo}
                             type="text" />
                         : userInfo?.job

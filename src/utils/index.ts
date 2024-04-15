@@ -6,7 +6,8 @@ import { redirect } from "react-router-dom";
 import Loading from "../views/components/Loading/index";
 //创建一个axios实例
 const instance = axios.create({
-  baseURL: "http://127.0.0.1:4000",
+  baseURL: "http://120.26.132.172:5000",
+  //baseURL: "http://120.26.132.172:5000",
   timeout: 10000, //设置超时
   headers: {
     "Content-Type": "application/x-www-form-urlencoded",

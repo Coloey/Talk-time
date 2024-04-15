@@ -36,7 +36,7 @@ const Login = ({ socket }) => {
             console.log(e, 'error');
             setTitle('注册账号');
             const registerRes = await register({ name: userName, password: password });
-            if (registerRes.data.status === 200) {
+            if (registerRes?.data.status === 200) {
                 await handleUserInfo();
             }
         }

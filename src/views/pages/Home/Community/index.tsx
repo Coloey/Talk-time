@@ -3,19 +3,20 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import MyComment from '../FocusPost/components/Comment'
 import { getPosts, getComments } from '../../../../utils/api'
 import { message } from 'antd'
+import { PostItems } from '../../../../types/app'
 import { updateLikes, updatePost } from '../../../../utils/api'
 import moment from 'moment'
 export default function Community({ socket }) {
     const [showComment, setShowComment] = useState([])
     const [commentCount, setCommentCount] = useState(0)
     const [likes, setLikes] = useState(0)
-    const [postItems, setPostItems] = useState([])
+    const [postItems, setPostItems] = useState<PostItems[]>([])
     const [content, setContent] = useState('')
     const [messageApi, contextHolder] = message.useMessage();
     const fromUser = localStorage.getItem('userName');
     const getPostsContent = async () => {
         const res = await getPosts();
-        setPostItems(res.data.data);
+        res.data.data && setPostItems(res.data.data);
         // console.log(res.data.data, 'res')
     }
 
