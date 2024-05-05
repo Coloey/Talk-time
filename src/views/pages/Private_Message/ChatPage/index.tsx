@@ -4,14 +4,15 @@ import ChatBody from '../ChatBody/index';
 import ChatFooter from '../ChatFooter/index';
 import { useSelector, useDispatch } from 'react-redux'
 import { store } from '../../../../app/store';
-import './index.styl'
+import './index.styl';
 import { getAllUsers, getMessages } from '../../../../utils/api';
+
 const ChatPage = ({ socket }) => {
     const [messages, setMessages] = useState([]);
     const [typingStatus, setTypingStatus] = useState('');
     const lastMessageRef = useRef(null);
     const [toUser, setToUser] = useState('')
-    const [users, setUsers] = useState([]);
+    const [users, setUsers] = useState([])
     //const [messagesCount, setMessagesCount] = useState(0)
     const messageCount = useSelector((state) => state.messageCount);
     const dispatch = useDispatch()
@@ -19,14 +20,14 @@ const ChatPage = ({ socket }) => {
     useEffect(() => {
         const getUsers = async () => {
             const res = await getAllUsers();
-            console.log(res, 'users')
-            res.data.data && setUsers(res.data.data)
+            //console.log(res, 'users')
+            setUsers(res?.data?.data)
         }
         getUsers()
         const getMessage = async () => {
             const res = await getMessages()
             //console.log(res.data.data, 'getMessage')
-            res.data.data && setMessages(res.data.data)
+            setMessages(res?.data?.data)
             //dispatch({ type: 'initValue', [messages.filter(item => item.readStaus === false).length]})
         }
         getMessage()

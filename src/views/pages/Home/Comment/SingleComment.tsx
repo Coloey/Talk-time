@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import './singleComment.styl'
 import { useState, useEffect } from 'react'
 import moment from 'moment'
-import { updateCommentLikes, updateComments } from '../../../../../../utils/api'
+import { updateCommentLikes, updateComments } from '../../../../utils/api'
 export default function SingleComment({ comment, index, onReplyAdd, socket, handleCommentLikes
 }) {
     const [visible, setVisible] = useState(false)

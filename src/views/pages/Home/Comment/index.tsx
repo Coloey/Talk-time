@@ -2,7 +2,7 @@ import './style.styl'
 import { useState, useEffect } from 'react'
 import moment from 'moment'
 import SingleComment from './SingleComment';
-import { storeComment, getComments, updatePostCommentCount } from '../../../../../../utils/api';
+import { storeComment, getComments, updatePostCommentCount } from '../../../../utils/api';
 export default function MyComment({ show, onCommentsCount, socket, author, post_id }) {
     const [comments, setComments] = useState([])
     const [newComment, setNewComment] = useState('')

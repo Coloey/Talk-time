@@ -3,6 +3,7 @@ import ProfileHeader from './ProfileHeader/index'
 import { updateUserInfo } from '../../../utils/api'
 import getBase64 from '../../../utils/getBase64'
 import { message } from 'antd'
+import FavoritePosts from './ProfileMain/index'
 import './index.styl'
 export default function User() {
     const [backgroundImage, setBackgroundImage] = useState('https://ts1.cn.mm.bing.net/th/id/R-C.503d978a89292089a60f555b093bdeeb?rik=JlV8Z9qWjt0wWQ&riu=http%3a%2f%2fwww.mobanjing.com%2fdown%2fjpg%2f53f98ad8fa4054aa9e9be8a27d605d89.jpg&ehk=Pe8NnV4AKIMzXxuJ4ASOICyZxa2bYRJpxJVYbSQEx8I%3d&risl=&pid=ImgRaw&r=0')
@@ -46,6 +47,7 @@ export default function User() {
                         && <img src={backgroundImage} alt="用户封面" loading='lazy' className='UserCover' />}
                 </div>
                 <ProfileHeader backgroundImage={backgroundImage}></ProfileHeader>
+                <FavoritePosts></FavoritePosts>
             </div>
         </div>
     )

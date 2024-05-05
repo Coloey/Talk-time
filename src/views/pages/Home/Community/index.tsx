@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 //import PostContent from '../FocusPost/components/PostContent'
-import MyComment from '../FocusPost/components/Comment'
-import { getPosts, getComments } from '../../../../utils/api'
+import MyComment from '../Comment'
+import { getPosts, getComments, collectPosts } from '../../../../utils/api'
 import { message } from 'antd'
 import { PostItems } from '../../../../types/app'
 import { updateLikes, updatePost } from '../../../../utils/api'
 import moment from 'moment'
+import './index.styl'
 export default function Community({ socket }) {
     const [showComment, setShowComment] = useState([])
     const [commentCount, setCommentCount] = useState(0)
@@ -13,10 +14,12 @@ export default function Community({ socket }) {
     const [postItems, setPostItems] = useState<PostItems[]>([])
     const [content, setContent] = useState('')
     const [messageApi, contextHolder] = message.useMessage();
+    //const [isFavorite, setIsFavorite] = useState(false);
     const fromUser = localStorage.getItem('userName');
+    const myUserInfo = JSON.parse(localStorage.getItem('userInfo'))
     const getPostsContent = async () => {
         const res = await getPosts();
-        res.data.data && setPostItems(res.data.data);
+        setPostItems(res?.data?.data);
         // console.log(res.data.data, 'res')
     }
 
@@ -71,19 +74,24 @@ export default function Community({ socket }) {
             socket.emit('sendLikes', { likes, id });
         }
     }
+    const handleSave = async (id: number) => {
+        console.log(id, 'post_id');
+        const res = await collectPosts({ user_id: myUserInfo.user_id, post_id: id });
+        console.log(res, ' collect');
+    }
     useEffect(() => {
-        setShowComment(new Array(postItems.length).fill(true))
-    }, [postItems.length])
+        postItems && setShowComment(new Array(postItems.length).fill(true))
+    }, [postItems?.length])
     return (
         <>
-            {postItems.map((postItem, index) => (
+            {postItems && postItems.map((postItem, index) => (
                 <div
                     className="post-container"
                     key={postItem.post_id}
                 >
                     <div className="authorInfo">
-                        <span className="avatar">
-                        </span>
+                        {/* <span className="avatar">
+                        </span> */}
                         <div className="authorInfo-content">
                             <span className="authorInfo-head">{postItem.name}</span>
                             <span className="authorInfo-detail">{new Date(postItem.created_at).toLocaleString()}</span>
@@ -110,7 +118,7 @@ export default function Community({ socket }) {
                                 : (<span>收起评论</span>)
                             }
                         </button>
-                        <button className='btn'>
+                        <button className='btn' onClick={() => handleSave(postItem.post_id)}>
                             <svg className="icon" aria-hidden="true">
                                 <use xlinkHref="#icon-a-44tubiao-242"></use>
                             </svg>

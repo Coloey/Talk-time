@@ -133,3 +133,17 @@ export const updateComments = (data) => {
         data: qs.stringify(data)
     })
 }
+export const collectPosts = (data) => {
+    return axios({
+        url: '/my/favoritePosts',
+        method: 'post',
+        data: qs.stringify(data)
+    })
+}
+export const getFavoritePosts = (data) => {
+    return axios({
+        url: '/my/getFavoritePosts',
+        method: 'get',
+        data,
+    })
+}

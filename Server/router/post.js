@@ -1,13 +1,15 @@
-const express=require('express')
-const expressJoi=require('@escook/express-joi')
+const express = require('express')
+const expressJoi = require('@escook/express-joi')
 //创建路由对象
-const router=express.Router()
+const router = express.Router()
 const post_handler = require('../routerhandler/post')
 router.post('/storePostContent', post_handler.storePost)
 router.get('/getPosts', post_handler.getPosts)
 router.post('/updatePost', post_handler.updatePost)
 router.post('/updateLikes', post_handler.updateLikes)
 router.post('/updatePostCommentCount', post_handler.updatePostCommentCount)
-router.post('/updateCommentLikes',post_handler.updateCommentLikes)
+router.post('/updateCommentLikes', post_handler.updateCommentLikes)
 router.post('/updateComments', post_handler.updateComments)
-module.exports=router
+router.post('/favoritePosts', post_handler.favoritePosts)
+router.get('/getFavoritePosts', post_handler.getFavoritePosts)
+module.exports = router

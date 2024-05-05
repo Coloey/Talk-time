@@ -6,7 +6,6 @@ import Home from './views/pages/Home/index';
 import Post from './views/pages/Post/index';
 import User from './views/pages/User/index';
 import PrivateMessage from './views/pages/Private_Message/ChatPage';
-import FocusPost from './views/pages/Home/FocusPost/index';
 import Community from './views/pages/Home/Community/index';
 import Login from './views/pages/login/index';
 import { createBrowserRouter, RouterProvider, useNavigate } from "react-router-dom";
@@ -16,8 +15,8 @@ import { store } from './app/store';
 import './index.css'
 import socketIO from 'socket.io-client';
 import { Provider } from 'react-redux';
-const socket = socketIO.connect('http://120.26.132.172:5000')
-// const socket = socketIO.connect('http://127.0.0.1:5000')
+//const socket = socketIO.connect('')
+const socket = socketIO.connect('http://127.0.0.1:5000')
 // import { io } from "socket.io-client";
 // const socket = io("http://127.0.0.1:4000");
 socket.on('open', () => {
@@ -33,10 +32,6 @@ const router = createBrowserRouter([
         path: RouteIndex.HOME,
         element: <Home socket={socket} />,
         children: [
-          {
-            path: RouteIndex.FOCUS_POST,
-            element: <FocusPost socket={socket} />
-          },
           {
             path: RouteIndex.COMMUNITY,
             element: <Community socket={socket} />
