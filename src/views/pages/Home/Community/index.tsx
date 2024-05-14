@@ -29,30 +29,36 @@ export default function Community({ socket }) {
         //getMyComment()
     }, [])
     useEffect(() => {
-        socket.on('updateLikes', ({ likes, id, haveLiked }) => {
-            // 属于宏任务
-            //console.log(postItems, 'old postItems', likes, 'likes', id, 'id')
-            //在状态更新完成后执行某些操作，可以使用setState()的回调函数形式
-            setPostItems(prevPostItems => {
-                const updatedPostItems = prevPostItems.map((item) => {
-                    if (item.post_id === id) {
-                        item.likes = likes;
-                    }
-                    return item;
+        let dirty = false;
+        if (!dirty) {
+            socket.on('updateLikes', ({ likes, id, haveLiked }) => {
+                // 属于宏任务
+                //console.log(postItems, 'old postItems', likes, 'likes', id, 'id')
+                //在状态更新完成后执行某些操作，可以使用setState()的回调函数形式
+                setPostItems(prevPostItems => {
+                    const updatedPostItems = prevPostItems.map((item) => {
+                        if (item.post_id === id) {
+                            item.likes = likes;
+                        }
+                        return item;
+                    });
+                    return updatedPostItems;
                 });
-                return updatedPostItems;
-            });
-            setLiked(haveLiked)
-            //console.log(postItems, 'socket后的postItems')
-        })
-        // socket.on('updatePost', (data) => {
-        //     console.log(data, 'postData')
-        //     // 属于宏任务
-        //     //console.log(postItems, 'old postItems', likes, 'likes', id, 'id')
-        //     //在状态更新完成后执行某些操作，可以使用setState()的回调函数形式
-        //     setPostItems([...postItems, data]);
-        //     console.log(postItems, 'socket后的postItems')
-        // })
+                setLiked(haveLiked)
+            })
+            socket.on('updatePost', (data) => {
+                setPostItems((prevPostItems) => {
+                    if (prevPostItems.indexOf(data) === -1) {
+                        return [...prevPostItems, data]
+                    }
+                    return prevPostItems
+                })
+                // console.log(postItems, 'socket后的postItems')
+            })
+        }
+        return () => {
+            dirty = true;
+        }
     }, [socket])
     const handleComment = (index: number) => {
         // console.log(index, 'index', showComment)
