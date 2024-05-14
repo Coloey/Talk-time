@@ -71,14 +71,15 @@ exports.getPosts = (req, res) => {
 exports.updatePost = (req, res) => {
   const {
     likes,
-    post_id
+    post_id,
+    haveLiked
   } = req.body;
-  console.log(likes, post_id, 'likes', 'post_id')
-  const sql = 'update posts set likes=? where post_id=?';
-  db.query(sql, [likes, post_id], (err, result) => {
+  //console.log(likes, post_id, 'likes', 'post_id')
+  const sql = 'update posts set likes=?, haveLiked=? where post_id=?';
+  db.query(sql, [likes, haveLiked, post_id], (err, result) => {
     if (err) return res.cc(err);
     if (result.affectedRows !== 1) return res.cc('点赞失败');
-    console.log(result, 'updatePost')
+    //console.log(result, 'updatePost')
     res.send({
       status: 0,
       data: result

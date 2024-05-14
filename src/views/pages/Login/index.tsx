@@ -17,6 +17,12 @@ const Login = ({ socket }) => {
             navigate(RouteIndex.HOME);
             await handleUserInfo();
         } else {
+            if (loginRes.data.status === 401) {
+                const registerRes = await register({ name: userName, password: password });
+                if (registerRes?.data.status === 200) {
+                    await handleUserInfo();
+                }
+            }
             throw new Error('Login failed');
         }
     }
@@ -31,14 +37,9 @@ const Login = ({ socket }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await handleLogin();
+            const res = await handleLogin();
         } catch (e) {
             console.log(e, 'error');
-            setTitle('注册账号');
-            const registerRes = await register({ name: userName, password: password });
-            if (registerRes?.data.status === 200) {
-                await handleUserInfo();
-            }
         }
 
     };

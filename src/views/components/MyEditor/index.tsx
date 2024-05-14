@@ -53,7 +53,7 @@ export default function MyEditor({ imageUploadConfig, socket }) {
             title = content;
         }
         const user_id = JSON.parse(localStorage.getItem('userInfo'))?.user_id;
-        const res = await storePostContent({
+        const data = {
             content: content,
             updated_at: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
             user_id,
@@ -62,19 +62,13 @@ export default function MyEditor({ imageUploadConfig, socket }) {
             likes: 0,
             commentCount: 0,
             haveLiked: 0
-        })
+        }
+        const res = await storePostContent(data)
         //console.log(res.data, 'storePostContent')
         if (res.data.status === 0) {
             navigate(RouteIndex.COMMUNITY)
         }
-        socket.emit('sendPost',
-            {
-                user_id,
-                title,
-                content,
-                created_at: moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
-            }
-        )
+        socket.emit('sendPost', data)
     }
     const handleLoad = () => {
         const rawContent = '{"blocks":[{"key":"1gs7c","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}';

@@ -1,3 +1,3 @@
-module.exports={
-    jwtSecrectKey:"xiaoqizuiban^_^"
+module.exports = {
+    jwtSecrectKey: "xiaoqizuiban^_^"
 }

@@ -28,7 +28,7 @@ const config = require("./config");
 app.use(
   expressJWT({
     secret: config.jwtSecrectKey,
-    algorithms: ["HS256"],
+    algorithms: ["HS256"]
   }).unless({
     path: [/^\/api\//]
   })
@@ -103,29 +103,21 @@ socketIO.on("connection", function (socket) {
       console.log(toUser + "不在线");
     }
   });
-  socket.on("sendPost", ({
-    user_id,
-    title,
-    content,
-    created_at
-  }) => {
-    console.log(user_id, title, content, created_at, 'obj')
-    socketIO.emit('updatePost', {
-      user_id,
-      title,
-      content,
-      created_at
-    });
+  socket.on("sendPost", (data) => {
+    //console.log(user_id, title, content, created_at, 'obj')
+    socketIO.emit('updatePost', data);
   });
   //帖子点赞
   socket.on('sendLikes', ({
     likes,
-    id
+    id,
+    haveLiked
   }) => {
     console.log(likes, 'likes', id, 'id')
     socketIO.emit('updateLikes', {
       likes,
-      id
+      id,
+      haveLiked
     })
   })
   //评论点赞

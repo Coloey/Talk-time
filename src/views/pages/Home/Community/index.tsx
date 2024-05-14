@@ -16,6 +16,7 @@ export default function Community({ socket }) {
     const [messageApi, contextHolder] = message.useMessage();
     //const [isFavorite, setIsFavorite] = useState(false);
     const fromUser = localStorage.getItem('userName');
+    const [isLiked, setLiked] = useState(0)
     const myUserInfo = JSON.parse(localStorage.getItem('userInfo'))
     const getPostsContent = async () => {
         const res = await getPosts();
@@ -28,7 +29,7 @@ export default function Community({ socket }) {
         //getMyComment()
     }, [])
     useEffect(() => {
-        socket.on('updateLikes', ({ likes, id }) => {
+        socket.on('updateLikes', ({ likes, id, haveLiked }) => {
             // 属于宏任务
             //console.log(postItems, 'old postItems', likes, 'likes', id, 'id')
             //在状态更新完成后执行某些操作，可以使用setState()的回调函数形式
@@ -41,6 +42,14 @@ export default function Community({ socket }) {
                 });
                 return updatedPostItems;
             });
+            setLiked(haveLiked)
+            //console.log(postItems, 'socket后的postItems')
+        })
+        socket.on('updatePost', (data) => {
+            // 属于宏任务
+            //console.log(postItems, 'old postItems', likes, 'likes', id, 'id')
+            //在状态更新完成后执行某些操作，可以使用setState()的回调函数形式
+            setPostItems([...postItems, data]);
             //console.log(postItems, 'socket后的postItems')
         })
     }, [socket])
@@ -68,6 +77,7 @@ export default function Community({ socket }) {
             res = await updatePost({
                 likes,
                 post_id: id,
+                haveLiked: 1,
             })
             setLikes(likes);
             // 每个页面都需要更新
@@ -106,7 +116,7 @@ export default function Community({ socket }) {
                                 <svg className="icon" aria-hidden="true">
                                     <use xlinkHref="#icon-a-44tubiao-208"></use>
                                 </svg>
-                                赞同{postItem.likes ? postItem.likes : 0}
+                                {postItem.haveLiked === 1 ? '已赞同' : '赞同'}{postItem.likes ? postItem.likes : 0}
                             </button>
                         </span>
                         <button className='btn' onClick={() => handleComment(index)}>
@@ -114,7 +124,7 @@ export default function Community({ socket }) {
                                 <use xlinkHref="#icon-a-44tubiao-168"></use>
                             </svg>
                             {!showComment[index]
-                                ? (<span>{postItem.count + '条'}评论</span>)
+                                ? (<span>{postItem.count || 0 + '条'}评论</span>)
                                 : (<span>收起评论</span>)
                             }
                         </button>
