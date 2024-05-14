@@ -105,7 +105,7 @@ socketIO.on("connection", function (socket) {
   });
   socket.on("sendPost", (data) => {
     //console.log(user_id, title, content, created_at, 'obj')
-    socketIO.emit('updatePost', data);
+    //socketIO.emit('updatePost', data);
   });
   //帖子点赞
   socket.on('sendLikes', ({

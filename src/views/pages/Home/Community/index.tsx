@@ -45,13 +45,14 @@ export default function Community({ socket }) {
             setLiked(haveLiked)
             //console.log(postItems, 'socket后的postItems')
         })
-        socket.on('updatePost', (data) => {
-            // 属于宏任务
-            //console.log(postItems, 'old postItems', likes, 'likes', id, 'id')
-            //在状态更新完成后执行某些操作，可以使用setState()的回调函数形式
-            setPostItems([...postItems, data]);
-            //console.log(postItems, 'socket后的postItems')
-        })
+        // socket.on('updatePost', (data) => {
+        //     console.log(data, 'postData')
+        //     // 属于宏任务
+        //     //console.log(postItems, 'old postItems', likes, 'likes', id, 'id')
+        //     //在状态更新完成后执行某些操作，可以使用setState()的回调函数形式
+        //     setPostItems([...postItems, data]);
+        //     console.log(postItems, 'socket后的postItems')
+        // })
     }, [socket])
     const handleComment = (index: number) => {
         // console.log(index, 'index', showComment)
